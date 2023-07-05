@@ -1,10 +1,10 @@
-# puresky_kit
+# PureSky_kit
 
-A new Flutter project.
+用flutter写的一个工具箱app，写来玩，也打算写好
 
-## Getting Started
+## 项目介绍
 
-This project is a starting point for a Flutter application.
+此项目是在学习之余进行开发的，由于我是第一次使用flutter，并且也不是计算机专业，所以软件写的不是很好，不过还是那句话能跑就行。
 
 A few resources to get you started if this is your first Flutter project:
 
