@@ -3,11 +3,10 @@ import 'dart:convert';
 import 'package:blur/blur.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:puresky_kit/pages/home_shouye/lishishangdejintian.dart';
 
 import '../../main.dart';
 import '../home_shouye/xingchendahai.dart';
-
 
 void main() => runApp(home_shouye());
 
@@ -17,12 +16,13 @@ var yiyan_json; //一言获取的new_json
 var yiyan_json_hitokoto = ' '; //一言的文本
 var yiyan_json_from_who = ' '; //一言的发布者
 var yiyan_json_from = ' '; //一言的来源
-SharedPreferences? sharedPreferences; //定义全局sharedPreferences
+var app_id = 'hgfhzqkwtkwhanoe';//api接口的app_id
+var app_secret = 'WXNIbTdEY2g5MGNqRDVEVkxjSU4xdz09';//api接口的app_secret
+
 
 class home_shouye extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     return Center(
       child: Container(
         height: double.infinity,
@@ -164,16 +164,25 @@ class _shouye_homeState extends State<shouye_home> {
                                             fit: BoxFit.cover),
                                         borderRadius: BorderRadius.all(
                                             Radius.circular(15))),
-                                    child: Container(
-                                      margin: EdgeInsets.fromLTRB(15, 0, 0, 20),
-                                      child: Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                          '历史上的今天',
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              decoration: TextDecoration.none,
-                                              color: Colors.white),
+                                    child: InkWell(
+                                      onTap: () {
+                                        Navigator.of(mainContext).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    lishishangdejintian()));
+                                      },
+                                      child: Container(
+                                        margin:
+                                            EdgeInsets.fromLTRB(15, 0, 0, 20),
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            '历史上的今天',
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                decoration: TextDecoration.none,
+                                                color: Colors.white),
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -239,7 +248,10 @@ class _shouye_homeState extends State<shouye_home> {
                                     child: InkWell(
                                       onTap: () {
                                         debugPrint('点击了星辰大海');
-                                        Navigator.of(mainContext).push(MaterialPageRoute(builder: (context)=>xingchendahai()));
+                                        Navigator.of(mainContext).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    xingchendahai()));
                                       },
                                       child: Container(
                                         margin:

@@ -7,9 +7,7 @@ import './pages/tabs/wode.dart';
 void main() {
   runApp(MyApp());
 }
-
 var mainContext; //创建main_tbs的全局context
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
