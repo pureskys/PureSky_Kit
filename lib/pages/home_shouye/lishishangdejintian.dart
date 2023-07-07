@@ -20,9 +20,10 @@ class _lishishangdejintianState extends State<lishishangdejintian> {
   var history_today_json; //存放缓存中的数据和直接网络获取的数据
   var json_month; //缓存中的日期
   var json_day; //缓存中的日期
+  List<Widget> history_widget = [];
 
   //history_today的判断是否请求网络
-  void _iscunzai_history_today() async {
+  Future _iscunzai_history_today() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var _ishistory_today_json_key =
         await sharedPreferences.containsKey("history_today_json_toString");
@@ -31,24 +32,26 @@ class _lishishangdejintianState extends State<lishishangdejintian> {
       try {
         var history_today_json_String =
             await sharedPreferences.getString('history_today_json_toString');
-
         var history_today_json_String1 =
             jsonDecode(history_today_json_String.toString());
         history_today_json = history_today_json_String1['data'];
-        debugPrint("缓存中的历史上的今天数据的data$history_today_json");
         json_month = history_today_json[0]['month'];
         json_day = history_today_json[0]['day'];
+        history_today_json = history_today_json_String;
+        debugPrint("缓存中的历史上的今天数据的data$history_today_json");
         if (json_month == month && json_day == day) {
           //如果缓存数据为今天则不请求网络直接渲染数据
+          return history_today_json;
         } else {
-          _net_history_today();
+          debugPrint('缓存日期不符合，已重新获取网络数据');
+          return _net_history_today();
         }
       } catch (e) {
         debugPrint("尝试获取缓存失败,使用_net_history_today方法设置缓存$e");
-        _net_history_today();
+        return _net_history_today();
       }
     } else {
-      await _net_history_today();
+      return await _net_history_today();
     }
   }
 
@@ -62,13 +65,13 @@ class _lishishangdejintianState extends State<lishishangdejintian> {
       Response response = await dio.get(history_today_url);
       if (response.statusCode == 200) {
         var history_today_json_toString = response;
-        history_today_json =
-            jsonDecode(history_today_json_toString.toString())['data'];
+        history_today_json = history_today_json_toString;
         debugPrint('网络获取的数据解析json$history_today_json');
         try {
           await sharedPreferences.setString('history_today_json_toString',
               history_today_json_toString.toString());
           debugPrint('设置历史上的今天缓存成功$history_today_json_toString');
+          return history_today_json;
         } catch (e) {
           debugPrint('设置历史上的今天缓存失败：$e');
         }
@@ -78,6 +81,16 @@ class _lishishangdejintianState extends State<lishishangdejintian> {
     }
   }
 
+  a() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var history_json =
+        sharedPreferences.getString("history_today_json_toString");
+    history_today_json = history_json;
+    return history_today_json;
+  }
+
+  late Future history_json_success;
+
   @override
   void initState() {
     datetime = DateTime.now(); //获取今日时间对象
@@ -85,59 +98,98 @@ class _lishishangdejintianState extends State<lishishangdejintian> {
     month = datetime.month; //解析今日月份
     day = datetime.day; //解析时间对象的日
     debugPrint("$year年$month月$day日");
-    _iscunzai_history_today();
+    history_json_success = _iscunzai_history_today();
     super.initState();
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
-        centerTitle: true,
-        leading: Container(
-          child: InkWell(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Icon(
-              Icons.arrow_back,
-              color: Colors.lightBlueAccent,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          centerTitle: true,
+          leading: Container(
+            child: InkWell(
+              onTap: () {
+                Navigator.pop(context);
+              },
+              child: Icon(
+                Icons.arrow_back,
+                color: Colors.lightBlueAccent,
+              ),
             ),
           ),
-        ),
-        title: Container(
-          child: Text(
-            "历史上的今天",
-            style: TextStyle(fontSize: 18, color: Colors.black87),
+          title: Container(
+            child: Text(
+              "历史上的今天",
+              style: TextStyle(fontSize: 18, color: Colors.black87),
+            ),
           ),
+          actions: [
+            Container(
+              margin: EdgeInsets.fromLTRB(0, 0, 18, 0),
+              child: Icon(
+                Icons.brightness_high,
+                color: Colors.lightBlueAccent,
+              ),
+            )
+          ],
         ),
-        actions: [
-          Container(
-            margin: EdgeInsets.fromLTRB(0, 0, 18, 0),
-            child: Icon(
-              Icons.brightness_high,
-              color: Colors.lightBlueAccent,
-            ),
-          )
-        ],
-      ),
-      body: Container(
-        height: double.infinity,
-        child: Column(
-          children: [Expanded(
-            flex: 1,
-            child: ListView(
-                children: [neirongkapian()],
-            ),
-          )],
-        ),
-      ),
-    );
+        body: Container(
+          height: double.infinity,
+          child: Column(
+            children: [
+              Expanded(
+                flex: 1,
+                child: FutureBuilder(
+                  future: history_json_success,
+                  builder:
+                      (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                    for (var i
+                        in jsonDecode(history_today_json.toString())['data']) {
+                      var year = i['year'];
+                      var month = i['month'];
+                      var day = i['day'];
+                      var title = i['title'];
+                      var details1 = i['details'];
+                      var details = "       " + details1.trim().replaceAll('　', '');
+                      print('$details');
+                      history_widget.add(neirongkapian(
+                          year: year,
+                          month: month,
+                          day: day,
+                          title: title,
+                          details: details));
+                    }
+                    if (snapshot.hasData) {
+                      return ListView(
+                        children: history_widget,
+                      );
+                    }
+                    return Container();
+                  },
+                ),
+              )
+            ],
+          ),
+        ));
   }
 }
 
+//自定义历史上的今天展示框
 class neirongkapian extends StatefulWidget {
-  const neirongkapian({super.key});
+  final year;
+  final month;
+  final day;
+  final title;
+  final details;
+
+  const neirongkapian(
+      {super.key,
+      required this.year,
+      required this.month,
+      required this.day,
+      required this.title,
+      required this.details});
 
   @override
   State<neirongkapian> createState() => _neirongkapianState();
@@ -148,19 +200,101 @@ class _neirongkapianState extends State<neirongkapian> {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      height: 170,
+      height: 100,
       margin: EdgeInsets.fromLTRB(18, 5, 18, 5),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(10)),
-            boxShadow: [BoxShadow(
-              color:Colors.grey,//颜色
-              offset: Offset(0,0),//位置
-              blurRadius: 6,//阴影程度
-              spreadRadius: 0//扩散程度
-            )],
+        boxShadow: [
+          BoxShadow(
+              color: Colors.grey, //颜色
+              offset: Offset(0, 0), //位置
+              blurRadius: 6, //阴影程度
+              spreadRadius: 0 //扩散程度
+              )
+        ],
       ),
-      child: Text('sdasd'),
+      child: Row(
+        children: [
+          Expanded(
+              flex: 3,
+              child: Container(
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "${widget.year}",
+                    style: TextStyle(fontSize: 19),
+                  ),
+                  Container(
+                    height: 2,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      color: Colors.cyan,
+                    ),
+                    margin: EdgeInsets.fromLTRB(8, 0, 8, 0),
+                    child: Row(
+                      children: [Expanded(flex: 1, child: Container())],
+                    ),
+                  ),
+                  Text(
+                    "${widget.month}月${widget.day}日",
+                    style: TextStyle(fontSize: 17),
+                  )
+                ],
+              ))),
+          Container(
+            width: 2,
+            child: Column(
+              children: [
+                Expanded(
+                    flex: 1,
+                    child: Container(
+                      color: Colors.blue,
+                    ))
+              ],
+            ),
+          ),
+          Expanded(
+              flex: 7,
+              child: Container(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Expanded(
+                        flex: 0,
+                        child: Container(
+                          margin: EdgeInsets.fromLTRB(45, 16, 30, 5),
+                          child: Align(
+                            child: Text(
+                              '${widget.title}',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                  overflow: TextOverflow.ellipsis),
+                              maxLines: 1,
+                            ),
+                            alignment: Alignment.centerLeft,
+                          ),
+                        )),
+                    Expanded(
+                        flex: 1,
+                        child: Container(
+                          margin: EdgeInsets.fromLTRB(5, 0, 7, 0),
+                          child: Text(
+                            '${widget.details}',
+                            style: TextStyle(
+                              fontSize: 15,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            maxLines: 2,
+                          ),
+                        ))
+                  ],
+                ),
+              ))
+        ],
+      ),
     );
   }
 }
