@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       title: 'PureSky_Kit',
       theme: ThemeData(
         appBarTheme: AppBarTheme(
-            backgroundColor: Colors.transparent,
+            backgroundColor: Colors.white,
             elevation: 0.0,
             titleTextStyle: TextStyle(
                 color: Colors.black87,

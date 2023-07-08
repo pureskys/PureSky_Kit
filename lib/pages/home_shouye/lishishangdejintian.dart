@@ -135,6 +135,7 @@ class _lishishangdejintianState extends State<lishishangdejintian> {
           ],
         ),
         body: Container(
+          color: Colors.white,
           height: double.infinity,
           child: Column(
             children: [
@@ -151,14 +152,19 @@ class _lishishangdejintianState extends State<lishishangdejintian> {
                       var day = i['day'];
                       var title = i['title'];
                       var details1 = i['details'];
-                      var details = "       " + details1.trim().replaceAll('　', '');
-                      print('$details');
+                      var details = "       " +
+                          details1.trim().replaceAll('　', ''); //展示在标签页的文本
+                      var details3 = details1.replaceAll(
+                          '　', '0-='); //详情页面用来解析后展示的文本
+                      var details2 = "       "+details3.replaceAll("0-=","\n       ");
                       history_widget.add(neirongkapian(
-                          year: year,
-                          month: month,
-                          day: day,
-                          title: title,
-                          details: details));
+                        year: year,
+                        month: month,
+                        day: day,
+                        title: title,
+                        details: details,
+                        details2: details2,
+                      ));
                     }
                     if (snapshot.hasData) {
                       return ListView(
@@ -182,6 +188,7 @@ class neirongkapian extends StatefulWidget {
   final day;
   final title;
   final details;
+  final details2;
 
   const neirongkapian(
       {super.key,
@@ -189,7 +196,8 @@ class neirongkapian extends StatefulWidget {
       required this.month,
       required this.day,
       required this.title,
-      required this.details});
+      required this.details,
+      required this.details2});
 
   @override
   State<neirongkapian> createState() => _neirongkapianState();
@@ -198,102 +206,127 @@ class neirongkapian extends StatefulWidget {
 class _neirongkapianState extends State<neirongkapian> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 100,
-      margin: EdgeInsets.fromLTRB(18, 5, 18, 5),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(10)),
-        boxShadow: [
-          BoxShadow(
-              color: Colors.grey, //颜色
-              offset: Offset(0, 0), //位置
-              blurRadius: 6, //阴影程度
-              spreadRadius: 0 //扩散程度
-              )
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-              flex: 3,
-              child: Container(
-                  child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "${widget.year}",
-                    style: TextStyle(fontSize: 19),
-                  ),
-                  Container(
-                    height: 2,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(100),
-                      color: Colors.cyan,
-                    ),
-                    margin: EdgeInsets.fromLTRB(8, 0, 8, 0),
-                    child: Row(
-                      children: [Expanded(flex: 1, child: Container())],
-                    ),
-                  ),
-                  Text(
-                    "${widget.month}月${widget.day}日",
-                    style: TextStyle(fontSize: 17),
-                  )
-                ],
-              ))),
-          Container(
-            width: 2,
-            child: Column(
-              children: [
-                Expanded(
-                    flex: 1,
-                    child: Container(
-                      color: Colors.blue,
-                    ))
-              ],
-            ),
-          ),
-          Expanded(
-              flex: 7,
-              child: Container(
+    return InkWell(
+      onTap: () {
+        showBottomSheet(
+          backgroundColor: Colors.blueGrey,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+            context: context,
+            builder: (context) {
+              return Container(
+                height: MediaQuery.of(context).size.height - 310,
+                width: double.infinity,
+                margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Expanded(
-                        flex: 0,
-                        child: Container(
-                          margin: EdgeInsets.fromLTRB(45, 16, 30, 5),
-                          child: Align(
-                            child: Text(
-                              '${widget.title}',
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w700,
-                                  overflow: TextOverflow.ellipsis),
-                              maxLines: 1,
-                            ),
-                            alignment: Alignment.centerLeft,
-                          ),
-                        )),
-                    Expanded(
                         flex: 1,
-                        child: Container(
-                          margin: EdgeInsets.fromLTRB(5, 0, 7, 0),
-                          child: Text(
-                            '${widget.details}',
-                            style: TextStyle(
-                              fontSize: 15,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            maxLines: 2,
-                          ),
+                        child: ListView(
+                          children: [Text("${widget.details2}",style: TextStyle(fontSize: 17),)],
                         ))
                   ],
                 ),
-              ))
-        ],
+              );
+            });
+      },
+      child: Container(
+        width: double.infinity,
+        height: 92,
+        margin: EdgeInsets.fromLTRB(18, 4, 18, 4),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+          boxShadow: [
+            BoxShadow(
+                color: Colors.grey, //颜色
+                offset: Offset(0, 0), //位置
+                blurRadius: 4, //阴影程度
+                spreadRadius: 0 //扩散程度
+                )
+          ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+                flex: 3,
+                child: Container(
+                    child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "${widget.year}",
+                      style: TextStyle(fontSize: 19),
+                    ),
+                    Container(
+                      height: 2,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(100),
+                        color: Colors.cyan,
+                      ),
+                      margin: EdgeInsets.fromLTRB(8, 0, 8, 0),
+                      child: Row(
+                        children: [Expanded(flex: 1, child: Container())],
+                      ),
+                    ),
+                    Text(
+                      "${widget.month}月${widget.day}日",
+                      style: TextStyle(fontSize: 17),
+                    )
+                  ],
+                ))),
+            Container(
+              width: 2,
+              child: Column(
+                children: [
+                  Expanded(
+                      flex: 1,
+                      child: Container(
+                        color: Colors.blue,
+                      ))
+                ],
+              ),
+            ),
+            Expanded(
+                flex: 7,
+                child: Container(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Expanded(
+                          flex: 0,
+                          child: Container(
+                            margin: EdgeInsets.fromLTRB(45, 12, 30, 5),
+                            child: Align(
+                              child: Text(
+                                '${widget.title}',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w700,
+                                    overflow: TextOverflow.ellipsis),
+                                maxLines: 1,
+                              ),
+                              alignment: Alignment.centerLeft,
+                            ),
+                          )),
+                      Expanded(
+                          flex: 1,
+                          child: Container(
+                            margin: EdgeInsets.fromLTRB(5, 0, 7, 0),
+                            child: Text(
+                              '${widget.details}',
+                              style: TextStyle(
+                                fontSize: 15,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              maxLines: 2,
+                            ),
+                          ))
+                    ],
+                  ),
+                ))
+          ],
+        ),
       ),
     );
   }
