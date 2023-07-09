@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:puresky_kit/pages/tabs/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+var _appbartile = '历史上的今天';
+
 class lishishangdejintian extends StatefulWidget {
   const lishishangdejintian({super.key});
 
@@ -81,12 +83,20 @@ class _lishishangdejintianState extends State<lishishangdejintian> {
     }
   }
 
+//中转函数
   a() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     var history_json =
         sharedPreferences.getString("history_today_json_toString");
     history_today_json = history_json;
     return history_today_json;
+  }
+
+  //定义appbar的title
+  void _settile(String title) {
+    setState(() {
+      _appbartile = title;
+    });
   }
 
   late Future history_json_success;
@@ -111,6 +121,9 @@ class _lishishangdejintianState extends State<lishishangdejintian> {
             child: InkWell(
               onTap: () {
                 Navigator.pop(context);
+                setState(() {
+                  _appbartile = "历史上的今天";
+                });
               },
               child: Icon(
                 Icons.arrow_back,
@@ -119,9 +132,13 @@ class _lishishangdejintianState extends State<lishishangdejintian> {
             ),
           ),
           title: Container(
-            child: Text(
-              "历史上的今天",
-              style: TextStyle(fontSize: 18, color: Colors.black87),
+            child: Center(
+              child: Text(
+                "$_appbartile",
+                maxLines: 3,
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 18, color: Colors.black87,),
+              ),
             ),
           ),
           actions: [
@@ -154,9 +171,10 @@ class _lishishangdejintianState extends State<lishishangdejintian> {
                       var details1 = i['details'];
                       var details = "       " +
                           details1.trim().replaceAll('　', ''); //展示在标签页的文本
-                      var details3 = details1.replaceAll(
-                          '　', '0-='); //详情页面用来解析后展示的文本
-                      var details2 = "       "+details3.replaceAll("0-=","\n       ");
+                      var details3 =
+                          details1.replaceAll('　', '0-='); //详情页面用来解析后展示的文本
+                      var details2 =
+                          "       " + details3.replaceAll("0-=", "\n       ");
                       history_widget.add(neirongkapian(
                         year: year,
                         month: month,
@@ -164,6 +182,7 @@ class _lishishangdejintianState extends State<lishishangdejintian> {
                         title: title,
                         details: details,
                         details2: details2,
+                        onpressed: _settile,
                       ));
                     }
                     if (snapshot.hasData) {
@@ -186,49 +205,68 @@ class neirongkapian extends StatefulWidget {
   final year;
   final month;
   final day;
-  final title;
-  final details;
-  final details2;
+  final title; //标题
+  final details; //传入的首页标签内容
+  final details2; //传入的详情页内容
+  final Function(String) onpressed;
 
-  const neirongkapian(
-      {super.key,
-      required this.year,
-      required this.month,
-      required this.day,
-      required this.title,
-      required this.details,
-      required this.details2});
+  const neirongkapian({
+    super.key,
+    required this.year,
+    required this.month,
+    required this.day,
+    required this.title,
+    required this.details,
+    required this.details2,
+    required this.onpressed,
+  });
 
   @override
   State<neirongkapian> createState() => _neirongkapianState();
 }
 
+PersistentBottomSheetController? persistentBottomSheetController;
+
 class _neirongkapianState extends State<neirongkapian> {
-  @override
+  //底部弹窗函数
+  void _isBottomSheetOpen() {
+    showBottomSheet(
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(0))),
+        context: context,
+        builder: (context) {
+          return WillPopScope(
+            onWillPop: () async {
+              widget.onpressed("历史上的今天");
+              return true;
+            },
+            child: Container(
+              height: MediaQuery.of(context).size.height,
+              width: double.infinity,
+              margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+              child: Column(
+                children: [
+                  Expanded(
+                      flex: 1,
+                      child: ListView(
+                        children: [
+                          Text(
+                            "${widget.details2}",
+                            style: TextStyle(fontSize: 17),
+                          )
+                        ],
+                      ))
+                ],
+              ),
+            ),
+          );
+        });
+  }
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        showBottomSheet(
-          backgroundColor: Colors.blueGrey,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
-            context: context,
-            builder: (context) {
-              return Container(
-                height: MediaQuery.of(context).size.height - 310,
-                width: double.infinity,
-                margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                child: Column(
-                  children: [
-                    Expanded(
-                        flex: 1,
-                        child: ListView(
-                          children: [Text("${widget.details2}",style: TextStyle(fontSize: 17),)],
-                        ))
-                  ],
-                ),
-              );
-            });
+        _isBottomSheetOpen();
+        widget.onpressed(widget.title);
       },
       child: Container(
         width: double.infinity,
