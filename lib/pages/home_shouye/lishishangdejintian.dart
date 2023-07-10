@@ -173,8 +173,9 @@ class _lishishangdejintianState extends State<lishishangdejintian> {
                           details1.trim().replaceAll('　', ''); //展示在标签页的文本
                       var details3 =
                           details1.replaceAll('　', '0-='); //详情页面用来解析后展示的文本
+                      var details4 = details3.replaceAll('\n','');
                       var details2 =
-                          "       " + details3.replaceAll("0-=", "\n       ");
+                          "       " + details4.replaceAll("0-=", "\n       ");
                       history_widget.add(neirongkapian(
                         year: year,
                         month: month,
@@ -252,7 +253,7 @@ class _neirongkapianState extends State<neirongkapian> {
                         children: [
                           Text(
                             "${widget.details2}",
-                            style: TextStyle(fontSize: 17),
+                            style: TextStyle(fontSize: 17,height: 1.6),
                           )
                         ],
                       ))

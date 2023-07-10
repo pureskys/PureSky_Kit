@@ -410,35 +410,38 @@ late Future yiyan1;
 
         //一言开始
         Container(
-          child: FutureBuilder<void>(future:yiyan1 ,
-            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-              return Column(
-                children: [
-                  Container(
-                    margin: EdgeInsets.fromLTRB(14, 0, 14, 0),
-                    child: Text("$yiyan_json_hitokoto",
-                        style: TextStyle(
-                            fontSize: 13,
-                            decoration: TextDecoration.none,
-                            fontWeight: FontWeight.normal,
-                            color: Colors.grey)),
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Container(
-                      margin: EdgeInsets.fromLTRB(0, 0, 10, 8),
-                      child: Text("$yiyan_json_from_who$yiyan_json_from",
+          child: InkWell(
+            onTap:yiyan,
+            child: FutureBuilder<void>(future:yiyan1 ,
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                return Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.fromLTRB(14, 0, 14, 0),
+                      child: Text("$yiyan_json_hitokoto",
                           style: TextStyle(
-                              fontSize: 11,
+                              fontSize: 13,
                               decoration: TextDecoration.none,
                               fontWeight: FontWeight.normal,
                               color: Colors.grey)),
                     ),
-                  )
-                ],
-              );
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Container(
+                        margin: EdgeInsets.fromLTRB(0, 0, 10, 8),
+                        child: Text("$yiyan_json_from_who$yiyan_json_from",
+                            style: TextStyle(
+                                fontSize: 11,
+                                decoration: TextDecoration.none,
+                                fontWeight: FontWeight.normal,
+                                color: Colors.grey)),
+                      ),
+                    )
+                  ],
+                );
 
-            },),
+              },),
+          ),
         )
       ],
     );
