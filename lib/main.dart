@@ -7,7 +7,9 @@ import './pages/tabs/wode.dart';
 void main() {
   runApp(MyApp());
 }
+
 var mainContext; //创建main_tbs的全局context
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -44,7 +46,7 @@ var list_tabs = [home_shouye(), wode()]; //定义的tabs列表
 class _tabsState extends State<tabs> {
   @override
   Widget build(BuildContext context) {
-    mainContext = context;
+    mainContext = context; //给全局上下文赋值
     return Scaffold(
       appBar: AppBar(
         title: Text('PureSky_Kit'),

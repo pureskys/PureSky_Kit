@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:blur/blur.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:puresky_kit/pages/home_shouye/all_gongju.dart';
 import 'package:puresky_kit/pages/home_shouye/lishishangdejintian.dart';
 
 import '../../main.dart';
@@ -86,63 +87,68 @@ class _shouye_homeState extends State<shouye_home> {
                         Expanded(
                           //左边容器
                             flex: 1,
-                            child: Container(
-                              margin: EdgeInsets.fromLTRB(0, 0, 7, 0),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(15),
-                                child: Stack(
-                                  children: [
-                                    Blur(
-                                      blur: 10,
-                                      blurColor: Colors.grey,
-                                      colorOpacity: 0.2,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(15)),
-                                            image: DecorationImage(
-                                                image:
-                                                AssetImage("images/tiandi.jpg"),
-                                                fit: BoxFit.cover)),
-                                      ),
-                                    ),
-                                    Column(
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.topLeft,
-                                          child: Container(
-                                            margin:
-                                            EdgeInsets.fromLTRB(15, 18, 0, 5),
-                                            child: Text(
-                                              '全部工具',
-                                              style: TextStyle(
-                                                  fontSize: 15.5,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white70,
-                                                  decoration: TextDecoration
-                                                      .none),
-                                            ),
-                                          ),
+                            child: InkWell(
+                              onTap: (){//全部工具的点击跳转
+                                Navigator.of(mainContext).push(MaterialPageRoute(builder: (context)=>all_gongju()));
+                              },
+                              child: Container(
+                                margin: EdgeInsets.fromLTRB(0, 0, 7, 0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(15),
+                                  child: Stack(
+                                    children: [
+                                      Blur(
+                                        blur: 10,
+                                        blurColor: Colors.grey,
+                                        colorOpacity: 0.2,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(15)),
+                                              image: DecorationImage(
+                                                  image:
+                                                  AssetImage("images/tiandi.jpg"),
+                                                  fit: BoxFit.cover)),
                                         ),
-                                        Align(
-                                          alignment: Alignment.topLeft,
-                                          child: Container(
-                                            margin:
-                                            EdgeInsets.fromLTRB(16, 10, 0, 0),
-                                            child: Text(
-                                              '工具总数:0',
-                                              style: TextStyle(
-                                                  fontSize: 15.1,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Colors.white54,
-                                                  decoration: TextDecoration
-                                                      .none),
+                                      ),
+                                      Column(
+                                        children: [
+                                          Align(
+                                            alignment: Alignment.topLeft,
+                                            child: Container(
+                                              margin:
+                                              EdgeInsets.fromLTRB(15, 18, 0, 5),
+                                              child: Text(
+                                                '全部工具',
+                                                style: TextStyle(
+                                                    fontSize: 15.5,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white70,
+                                                    decoration: TextDecoration
+                                                        .none),
+                                              ),
                                             ),
                                           ),
-                                        )
-                                      ],
-                                    )
-                                  ],
+                                          Align(
+                                            alignment: Alignment.topLeft,
+                                            child: Container(
+                                              margin:
+                                              EdgeInsets.fromLTRB(16, 10, 0, 0),
+                                              child: Text(
+                                                '工具总数:0',
+                                                style: TextStyle(
+                                                    fontSize: 15.1,
+                                                    fontWeight: FontWeight.w600,
+                                                    color: Colors.white54,
+                                                    decoration: TextDecoration
+                                                        .none),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             )),
