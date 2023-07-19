@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:puresky_kit/pages/home_shouye/all_gongju.dart';
 import 'package:puresky_kit/pages/home_shouye/lishishangdejintian.dart';
+import 'package:puresky_kit/pages/home_shouye/suijiyinyuetuijian.dart';
 
 import '../../main.dart';
 import '../home_shouye/xingchendahai.dart';
@@ -53,318 +54,324 @@ class _shouye_homeState extends State<shouye_home> {
   Widget build(BuildContext context) {
     return Container(
         child: Expanded(
-          flex: 1,
-          child: ListView(
+      flex: 1,
+      child: ListView(
+        children: [
+          Column(
             children: [
-              Column(
-                children: [
-                  Container(
-                    //每日一图开始
-                      height: 180,
+              Container(
+                  //每日一图开始
+                  height: 180,
+                  width: double.infinity,
+                  margin: EdgeInsets.fromLTRB(14, 5, 14, 10),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(12))),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(13),
+                    child: FadeInImage(
+                      matchTextDirection: true,
+                      fit: BoxFit.cover,
                       width: double.infinity,
-                      margin: EdgeInsets.fromLTRB(14, 5, 14, 10),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(Radius.circular(12))),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(13),
-                        child: FadeInImage(
-                          matchTextDirection: true,
-                          fit: BoxFit.cover,
-                          width: double.infinity,
-                          height: double.infinity,
-                          placeholder: AssetImage('images/shulin.webp'),
-                          image: NetworkImage(shouye_meiriyitu),
-                        ),
-                      )),
+                      height: double.infinity,
+                      placeholder: AssetImage('images/shulin.webp'),
+                      image: NetworkImage(shouye_meiriyitu),
+                    ),
+                  )),
 
-                  //第二次布局开始
-                  Container(
-                    margin: EdgeInsets.fromLTRB(14, 0, 14, 0),
-                    height: 175,
-                    child: Row(
-                      //第二次总体横向布局
-                      children: [
-                        Expanded(
-                          //左边容器
-                            flex: 1,
-                            child: InkWell(
-                              onTap: (){//全部工具的点击跳转
-                                Navigator.of(mainContext).push(MaterialPageRoute(builder: (context)=>all_gongju()));
-                              },
-                              child: Container(
-                                margin: EdgeInsets.fromLTRB(0, 0, 7, 0),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(15),
-                                  child: Stack(
+              //第二次布局开始
+              Container(
+                margin: EdgeInsets.fromLTRB(14, 0, 14, 0),
+                height: 175,
+                child: Row(
+                  //第二次总体横向布局
+                  children: [
+                    Expanded(
+                        //左边容器
+                        flex: 1,
+                        child: InkWell(
+                          onTap: () {
+                            //全部工具的点击跳转
+                            Navigator.of(mainContext).push(MaterialPageRoute(
+                                builder: (context) => all_gongju()));
+                          },
+                          child: Container(
+                            margin: EdgeInsets.fromLTRB(0, 0, 7, 0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Stack(
+                                children: [
+                                  Blur(
+                                    blur: 10,
+                                    blurColor: Colors.grey,
+                                    colorOpacity: 0.2,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15)),
+                                          image: DecorationImage(
+                                              image: AssetImage(
+                                                  "images/tiandi.jpg"),
+                                              fit: BoxFit.cover)),
+                                    ),
+                                  ),
+                                  Column(
                                     children: [
-                                      Blur(
-                                        blur: 10,
-                                        blurColor: Colors.grey,
-                                        colorOpacity: 0.2,
+                                      Align(
+                                        alignment: Alignment.topLeft,
                                         child: Container(
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(15)),
-                                              image: DecorationImage(
-                                                  image:
-                                                  AssetImage("images/tiandi.jpg"),
-                                                  fit: BoxFit.cover)),
+                                          margin:
+                                              EdgeInsets.fromLTRB(15, 18, 0, 5),
+                                          child: Text(
+                                            '全部工具',
+                                            style: TextStyle(
+                                                fontSize: 15.5,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white70,
+                                                decoration:
+                                                    TextDecoration.none),
+                                          ),
                                         ),
                                       ),
-                                      Column(
-                                        children: [
-                                          Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Container(
-                                              margin:
-                                              EdgeInsets.fromLTRB(15, 18, 0, 5),
-                                              child: Text(
-                                                '全部工具',
-                                                style: TextStyle(
-                                                    fontSize: 15.5,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.white70,
-                                                    decoration: TextDecoration
-                                                        .none),
-                                              ),
-                                            ),
-                                          ),
-                                          Align(
-                                            alignment: Alignment.topLeft,
-                                            child: Container(
-                                              margin:
+                                      Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Container(
+                                          margin:
                                               EdgeInsets.fromLTRB(16, 10, 0, 0),
-                                              child: Text(
-                                                '工具总数:0',
-                                                style: TextStyle(
-                                                    fontSize: 15.1,
-                                                    fontWeight: FontWeight.w600,
-                                                    color: Colors.white54,
-                                                    decoration: TextDecoration
-                                                        .none),
-                                              ),
-                                            ),
-                                          )
-                                        ],
+                                          child: Text(
+                                            '工具总数:0',
+                                            style: TextStyle(
+                                                fontSize: 15.1,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.white54,
+                                                decoration:
+                                                    TextDecoration.none),
+                                          ),
+                                        ),
                                       )
                                     ],
-                                  ),
-                                ),
-                              ),
-                            )),
-                        Expanded(
-                          //右边
-                            flex: 1,
-                            child: Container(
-                              margin: EdgeInsets.fromLTRB(7, 0, 0, 0),
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                    //右边的上方
-                                      flex: 1,
-                                      child: Container(
-                                        margin: EdgeInsets.fromLTRB(0, 0, 0, 7),
-                                        decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                                image: AssetImage(
-                                                    "images/shuzhi.webp"),
-                                                fit: BoxFit.cover),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(15))),
-                                        child: InkWell(
-                                          onTap: () {
-                                            Navigator.of(mainContext).push(
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        lishishangdejintian()));
-                                          },
-                                          child: Container(
-                                            margin:
-                                            EdgeInsets.fromLTRB(15, 0, 0, 20),
-                                            child: Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: Text(
-                                                '历史上的今天',
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    decoration: TextDecoration
-                                                        .none,
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      )),
-                                  Expanded(
-                                    //右边的下方
-                                      flex: 1,
-                                      child: Container(
-                                        margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
-                                        decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                                image: AssetImage(
-                                                    "images/danchefengjing.jpg"),
-                                                fit: BoxFit.cover),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(15))),
-                                      ))
+                                  )
                                 ],
                               ),
-                            ))
-                      ],
-                    ),
-                  ),
-                  //中间小圆点
-                  Container(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(9999),
-                      child: Container(
-                        width: 22,
-                        height: 22,
-                        decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: AssetImage("images/taiyang.png"),
-                                fit: BoxFit.cover)),
-                      ),
-                    ),
-                  ),
-                  //第三次页面布局开始
-                  Container(
-                    margin: EdgeInsets.fromLTRB(14, 0, 14, 0),
-                    height: 175,
-                    child: Row(
-                      children: [
-                        Expanded(
-                          //左边
-                            flex: 1,
-                            child: Container(
-                              margin: EdgeInsets.fromLTRB(0, 0, 7, 0),
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                    //左边的上方
-                                      flex: 1,
+                            ),
+                          ),
+                        )),
+                    Expanded(
+                        //右边
+                        flex: 1,
+                        child: Container(
+                          margin: EdgeInsets.fromLTRB(7, 0, 0, 0),
+                          child: Column(
+                            children: [
+                              Expanded(
+                                  //右边的上方
+                                  flex: 1,
+                                  child: Container(
+                                    margin: EdgeInsets.fromLTRB(0, 0, 0, 7),
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: AssetImage(
+                                                "images/shuzhi.webp"),
+                                            fit: BoxFit.cover),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(15))),
+                                    child: InkWell(
+                                      onTap: () {
+                                        Navigator.of(mainContext).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    lishishangdejintian()));
+                                      },
                                       child: Container(
-                                        margin: EdgeInsets.fromLTRB(0, 0, 0, 7),
-                                        decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                                image: AssetImage(
-                                                    "images/mohuse.webp"),
-                                                fit: BoxFit.cover),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(15))),
-                                        child: InkWell(
-                                          onTap: () {
-                                            debugPrint('点击了星辰大海');
-                                            Navigator.of(mainContext).push(
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        xingchendahai()));
-                                          },
-                                          child: Container(
-                                            margin:
+                                        margin:
                                             EdgeInsets.fromLTRB(15, 0, 0, 20),
-                                            child: Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: Text(
-                                                '星辰大海',
-                                                style: TextStyle(
-                                                    fontSize: 15,
-                                                    decoration: TextDecoration
-                                                        .none,
-                                                    color: Colors.white70),
-                                              ),
-                                            ),
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            '历史上的今天',
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                decoration: TextDecoration.none,
+                                                color: Colors.white),
                                           ),
                                         ),
-                                      )),
-                                  Expanded(
-                                    //左边的下方
-                                      flex: 1,
-                                      child: Container(
-                                        margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
-                                        decoration: BoxDecoration(
-                                            image: DecorationImage(
-                                                image: AssetImage(
-                                                    "images/pashan.webp"),
-                                                fit: BoxFit.cover),
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(15))),
-                                      ))
-                                ],
-                              ),
-                            )),
-                        Expanded(
-                          //右边容器
-                            flex: 1,
-                            child: Container(
-                              margin: EdgeInsets.fromLTRB(7, 0, 0, 0),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(15),
-                                child: Stack(
-                                  children: [
-                                    Blur(
-                                      blur: 15,
-                                      blurColor: Colors.grey,
-                                      colorOpacity: 0.2,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(15)),
-                                            image: DecorationImage(
-                                                image:
-                                                AssetImage("images/limao.webp"),
-                                                fit: BoxFit.cover)),
                                       ),
                                     ),
-                                    Column(
-                                      children: [
-                                        Align(
-                                          alignment: Alignment.topLeft,
-                                          child: Container(
-                                            margin:
-                                            EdgeInsets.fromLTRB(15, 18, 0, 5),
-                                            child: Text(
-                                              '我的收藏',
-                                              style: TextStyle(
-                                                  fontSize: 15.5,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.white70,
-                                                  decoration: TextDecoration
-                                                      .none),
-                                            ),
+                                  )),
+                              Expanded(
+                                  //右边的下方
+                                  flex: 1,
+                                  child: InkWell(
+                                    onTap: () {//跳转到随机网易云音乐推荐
+                                      Navigator.of(mainContext).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  suijiyinyuetuijian()));
+                                    },
+                                    child: Container(
+                                      margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image: AssetImage(
+                                                  "images/danchefengjing.jpg"),
+                                              fit: BoxFit.cover),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15))),
+                                    ),
+                                  ))
+                            ],
+                          ),
+                        ))
+                  ],
+                ),
+              ),
+              //中间小圆点
+              Container(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(9999),
+                  child: Container(
+                    width: 22,
+                    height: 22,
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage("images/taiyang.png"),
+                            fit: BoxFit.cover)),
+                  ),
+                ),
+              ),
+              //第三次页面布局开始
+              Container(
+                margin: EdgeInsets.fromLTRB(14, 0, 14, 0),
+                height: 175,
+                child: Row(
+                  children: [
+                    Expanded(
+                        //左边
+                        flex: 1,
+                        child: Container(
+                          margin: EdgeInsets.fromLTRB(0, 0, 7, 0),
+                          child: Column(
+                            children: [
+                              Expanded(
+                                  //左边的上方
+                                  flex: 1,
+                                  child: Container(
+                                    margin: EdgeInsets.fromLTRB(0, 0, 0, 7),
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: AssetImage(
+                                                "images/mohuse.webp"),
+                                            fit: BoxFit.cover),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(15))),
+                                    child: InkWell(
+                                      onTap: () {
+                                        debugPrint('点击了星辰大海');
+                                        Navigator.of(mainContext).push(
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    xingchendahai()));
+                                      },
+                                      child: Container(
+                                        margin:
+                                            EdgeInsets.fromLTRB(15, 0, 0, 20),
+                                        child: Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                            '星辰大海',
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                decoration: TextDecoration.none,
+                                                color: Colors.white70),
                                           ),
                                         ),
-                                        Align(
-                                          alignment: Alignment.topLeft,
-                                          child: Container(
-                                            margin:
+                                      ),
+                                    ),
+                                  )),
+                              Expanded(
+                                  //左边的下方
+                                  flex: 1,
+                                  child: Container(
+                                    margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
+                                    decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                            image: AssetImage(
+                                                "images/pashan.webp"),
+                                            fit: BoxFit.cover),
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(15))),
+                                  ))
+                            ],
+                          ),
+                        )),
+                    Expanded(
+                        //右边容器
+                        flex: 1,
+                        child: Container(
+                          margin: EdgeInsets.fromLTRB(7, 0, 0, 0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Stack(
+                              children: [
+                                Blur(
+                                  blur: 15,
+                                  blurColor: Colors.grey,
+                                  colorOpacity: 0.2,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(15)),
+                                        image: DecorationImage(
+                                            image:
+                                                AssetImage("images/limao.webp"),
+                                            fit: BoxFit.cover)),
+                                  ),
+                                ),
+                                Column(
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Container(
+                                        margin:
+                                            EdgeInsets.fromLTRB(15, 18, 0, 5),
+                                        child: Text(
+                                          '我的收藏',
+                                          style: TextStyle(
+                                              fontSize: 15.5,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white70,
+                                              decoration: TextDecoration.none),
+                                        ),
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Container(
+                                        margin:
                                             EdgeInsets.fromLTRB(16, 10, 0, 0),
-                                            child: Text(
-                                              '0条珍藏',
-                                              style: TextStyle(
-                                                  fontSize: 15.1,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Colors.white54,
-                                                  decoration: TextDecoration
-                                                      .none),
-                                            ),
-                                          ),
-                                        )
-                                      ],
+                                        child: Text(
+                                          '0条珍藏',
+                                          style: TextStyle(
+                                              fontSize: 15.1,
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.white54,
+                                              decoration: TextDecoration.none),
+                                        ),
+                                      ),
                                     )
                                   ],
-                                ),
-                              ),
-                            )),
-                      ],
-                    ),
-                  ),
-                ],
+                                )
+                              ],
+                            ),
+                          ),
+                        )),
+                  ],
+                ),
               ),
             ],
           ),
-        ));
+        ],
+      ),
+    ));
   }
 }
 
@@ -398,11 +405,13 @@ class _yiyan_pageState extends State<yiyan_page> {
       print('发生错误：$error');
     }
   }
-late Future yiyan1;
+
+  late Future yiyan1;
+
   @override
   void initState() {
     // TODO: implement initState
-     yiyan1 = yiyan();
+    yiyan1 = yiyan();
     super.initState();
   }
 
@@ -417,8 +426,9 @@ late Future yiyan1;
         //一言开始
         Container(
           child: InkWell(
-            onTap:yiyan,
-            child: FutureBuilder<void>(future:yiyan1 ,
+            onTap: yiyan,
+            child: FutureBuilder<void>(
+              future: yiyan1,
               builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                 return Column(
                   children: [
@@ -445,8 +455,8 @@ late Future yiyan1;
                     )
                   ],
                 );
-
-              },),
+              },
+            ),
           ),
         )
       ],

@@ -15,76 +15,205 @@ class _all_gongjuState extends State<all_gongju> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          centerTitle: true,
-          leading: Container(
-            child: InkWell(
-              onTap: () {
-                Navigator.pop(context);
-                setState(() {
-                  _appbartile = "全部工具";
-                });
-              },
-              child: Icon(
-                Icons.arrow_back,
-                color: Colors.lightBlueAccent,
-              ),
-            ),
-          ),
-          title: Container(
-            child: Center(
-              child: Text(
-                "$_appbartile",
-                maxLines: 3,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.black87,
+          appBar: AppBar(
+            backgroundColor: Colors.white,
+            centerTitle: true,
+            leading: Container(
+              child: InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                  setState(() {
+                    _appbartile = "全部工具";
+                  });
+                },
+                child: Icon(
+                  Icons.arrow_back,
+                  color: Colors.lightBlueAccent,
                 ),
               ),
             ),
-          ),
-          actions: [
-            Container(
-              margin: EdgeInsets.fromLTRB(0, 0, 18, 0),
-              child: Icon(
-                Icons.brightness_high,
-                color: Colors.lightBlueAccent,
-              ),
-            )
-          ],
-        ),
-        body: Container(
-          color: Colors.white,
-          child: Center(
-            child: Expanded(
-              child: CustomScrollView(
-                slivers: [
-                  SliverList(
-                    delegate: SliverChildListDelegate([
-                      ExpansionTile(
-                        title: Text("日常工具"),
-                        children: [
-                          Container(margin: EdgeInsets.all(10),height: 500,child: GridView(
-                            gridDelegate:
-                            SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                mainAxisSpacing: 10,
-                                crossAxisSpacing: 10,
-                                childAspectRatio: 2),
-                            children: [gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),gongju_zujuan(),],
-                          ),)
-                        ],
-                      ),
-                    ]),
-                  )
-                ],
+            title: Container(
+              child: Center(
+                child: Text(
+                  "$_appbartile",
+                  maxLines: 3,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.black87,
+                  ),
+                ),
               ),
             ),
+            actions: [
+              Container(
+                margin: EdgeInsets.fromLTRB(0, 0, 18, 0),
+                child: Icon(
+                  Icons.brightness_high,
+                  color: Colors.lightBlueAccent,
+                ),
+              )
+            ],
           ),
-        ),
-      ),
+          body: Container(
+            child: Column(
+              children: [
+                Expanded(
+                    flex: 1,
+                    child: ListView(
+                      children: [
+                        ExpansionTile(
+                          title: Text("日常工具"),
+                          children: [
+                            Container(
+                              margin: EdgeInsets.fromLTRB(18, 5, 18, 10),
+                              child: GridView(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        mainAxisSpacing: 15,
+                                        crossAxisSpacing: 15,
+                                        childAspectRatio: 2),
+                                children: [
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                        ExpansionTile(
+                          title: Text("日常工具"),
+                          children: [
+                            Container(
+                              margin: EdgeInsets.fromLTRB(18, 5, 18, 10),
+                              child: GridView(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    mainAxisSpacing: 15,
+                                    crossAxisSpacing: 15,
+                                    childAspectRatio: 2),
+                                children: [
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                        ExpansionTile(
+                          title: Text("日常工具"),
+                          children: [
+                            Container(
+                              margin: EdgeInsets.fromLTRB(18, 5, 18, 10),
+                              child: GridView(
+                                physics: NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    mainAxisSpacing: 15,
+                                    crossAxisSpacing: 15,
+                                    childAspectRatio: 2),
+                                children: [
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                  gongju_zujuan(),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
+                    ))
+              ],
+            ),
+          )),
     );
   }
 }
@@ -100,7 +229,7 @@ class _gongju_zujuanState extends State<gongju_zujuan> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 100,
+      height: 90,
       child: Center(
         child: Row(
           children: [
@@ -115,14 +244,14 @@ class _gongju_zujuanState extends State<gongju_zujuan> {
                           children: [
                             Blur(
                                 blur: 10,
-                                blurColor: Colors.grey,
+                                blurColor: Colors.white,
                                 colorOpacity: 0.2,
                                 child: Container(
                                   decoration: BoxDecoration(
                                       gradient: LinearGradient(
                                           colors: [
-                                        Colors.lightBlueAccent,
-                                        Colors.green
+                                        Colors.greenAccent,
+                                        Colors.lightBlueAccent
                                       ],
                                           begin: Alignment.topLeft,
                                           end: Alignment.bottomRight)),
