@@ -8,8 +8,9 @@ class xingchendahai extends StatefulWidget {
   @override
   State<xingchendahai> createState() => _xingchendahaiState();
 }
-
+var url1;
 class _xingchendahaiState extends State<xingchendahai> {
+
   // _______________________________________________________________
   var controller = WebViewController()
     ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -19,7 +20,10 @@ class _xingchendahaiState extends State<xingchendahai> {
         // Update loading bar.
       },
       onPageStarted: (String url) {},
-      onPageFinished: (String url) {},
+      onPageFinished: (String url) {
+          Uri uri = Uri.parse(url);
+          url1 = uri.origin + uri.path;
+      },
       onWebResourceError: (WebResourceError error) {},
       onNavigationRequest: (NavigationRequest request) {
         if (request.url.startsWith(
@@ -32,7 +36,10 @@ class _xingchendahaiState extends State<xingchendahai> {
         return NavigationDecision.navigate;
       },
     ))
-    ..loadRequest(Uri.parse('http://haikuoshijie.cn/'));
+    ..loadRequest(Uri.parse('https://chenyang-tnt.gitee.io/'));
+
+
+
 // ___________________________________________________
   @override
   void initState() {
@@ -44,7 +51,10 @@ class _xingchendahaiState extends State<xingchendahai> {
     return Scaffold(
       body: WillPopScope(
           child: Container(
-            margin: EdgeInsets.fromLTRB(0, MediaQuery.of(context).padding.top, 0, 2),
+            margin: EdgeInsets.fromLTRB(0, MediaQuery
+                .of(context)
+                .padding
+                .top + 12, 0, 2),
             child: Center(
               child: WebViewWidget(
                 controller: controller,
@@ -52,7 +62,7 @@ class _xingchendahaiState extends State<xingchendahai> {
             ),
           ),
           onWillPop: () async {
-            if (await controller.canGoBack()) {
+            if (await controller.canGoBack() && url1 != "https://chenyang-tnt.gitee.io/") {
               await controller.goBack();
               return false;
             } else {

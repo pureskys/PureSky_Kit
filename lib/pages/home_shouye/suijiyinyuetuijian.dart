@@ -19,8 +19,8 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
   var _maxtime = 1.0; //进度条最大长度
   var _musicjindu = 0.0; //进度条初始长度
   var _netjson; //页面构建所需的json
-  var _maxtime_xianshi = "0:00";//显示的总长度
-  var _musicjindu_xianshi = "0:00";//进度显示
+  var _maxtime_xianshi = "0:00"; //显示的总长度
+  var _musicjindu_xianshi = "0:00"; //进度显示
 
   late Future _netmusic; //中转函数
 
@@ -38,8 +38,9 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
     _netmusic = _net();
     super.initState();
   }
+
 //获取歌曲信息
-   Future<void> _huoquxinxi(_mp3url)async {
+  Future<void> _huoquxinxi(_mp3url) async {
     await audioPlayer.setSourceUrl(_mp3url);
     Duration? maxDuration = await audioPlayer.getDuration();
     _maxtime = maxDuration!.inMilliseconds.toDouble();
@@ -47,7 +48,8 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
       var a = _maxtime / 1000 / 60;
       _maxtime_xianshi = a.toStringAsFixed(2).replaceAll('.', ':');
     });
-   }
+  }
+
 //歌歌曲切换操作
   Future<void> _music_qiehuan() async {
     audioPlayer.stop();
@@ -145,217 +147,234 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
-        future: _netmusic,
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            // 异步操作正在进行中，显示加载指示器
-            return Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (snapshot.hasError) {
-            // 异步操作出错，显示错误信息
-            return Text('Error: ${snapshot.error}');
-          } else {
-            // 异步操作已完成，显示数据
-            var json = jsonDecode(_netjson.toString())['data'];
-            name = json['name'];
-            auther = json['auther'];
-            picUrl = json['picUrl'];
-            mp3url = json['mp3url'];
-            _content = json['content'];
-            _huoquxinxi(mp3url);
+      body: WillPopScope(
+          child: FutureBuilder(
+            future: _netmusic,
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                // 异步操作正在进行中，显示加载指示器
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (snapshot.hasError) {
+                // 异步操作出错，显示错误信息
+                return Text('Error: ${snapshot.error}');
+              } else {
+                // 异步操作已完成，显示数据
+                var json = jsonDecode(_netjson.toString())['data'];
+                name = json['name'];
+                auther = json['auther'];
+                picUrl = json['picUrl'];
+                mp3url = json['mp3url'];
+                _content = json['content'];
+                _huoquxinxi(mp3url);
 
-            return Stack(
-              children: [
-                Blur(
-                    blur: 12,
-                    blurColor: Colors.transparent,
-                    colorOpacity: 0.2,
-                    child: Container(
-                      height: double.infinity,
-                      child: FadeInImage(
-                        fit: BoxFit.cover,
-                        placeholder: AssetImage(_zhanweitupian),
-                        image: NetworkImage(picUrl),
-                      ),
-                    )),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                return Stack(
                   children: [
-                    Container(
-                      margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                      child: Column(
-                        children: [
-                          Container(
-                            child: Text(
-                              '$name',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  color: Colors.white54,
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.bold),
-                            ),
+                    Blur(
+                        blur: 12,
+                        blurColor: Colors.transparent,
+                        colorOpacity: 0.2,
+                        child: Container(
+                          height: double.infinity,
+                          child: FadeInImage(
+                            fit: BoxFit.cover,
+                            placeholder: AssetImage(_zhanweitupian),
+                            image: NetworkImage(picUrl),
                           ),
-                          Container(
-                            child: Text(
-                              "$auther",
-                              style: TextStyle(
-                                  fontSize: 16, color: Colors.white60),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    //大图片
-                    Stack(
+                        )),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15)),
-                          child: Blur(
-                            borderRadius: BorderRadius.circular(15),
-                            blur: 0.5,
-                            blurColor: Colors.grey,
-                            colorOpacity: 0.2,
-                            child: Container(
-                              height: 300,
-                              width: 310,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(15),
-                                child: FadeInImage(
-                                  matchTextDirection: true,
-                                  fit: BoxFit.cover,
-                                  placeholder: AssetImage(_zhanweitupian),
-                                  image: NetworkImage(picUrl),
+                          margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                          child: Column(
+                            children: [
+                              Container(
+                                child: Text(
+                                  '$name',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      color: Colors.white54,
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ),
-                            ),
+                              Container(
+                                child: Text(
+                                  "$auther",
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.white60),
+                                ),
+                              ),
+                            ],
                           ),
-                        )
-                      ],
-                    ),
-                    //评论
-                    Container(
-                        margin: EdgeInsets.fromLTRB(12, 10, 12, 0),
-                        child: Text(
-                          "$_content",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.white54,
-                          ),
-                        )),
-
-                    //进度条
-                    Container(
-                      margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          Text("$_musicjindu_xianshi",style: TextStyle(color: Colors.white54),),
-                          Expanded(
-                            flex: 1,
-                            child: Slider(
-                                activeColor: Colors.blueGrey,
-                                min: 0,
-                                max: _maxtime + 900,
-                                value: _musicjindu,
-                                onChanged: (e) {
-                                  setState(() {
-                                    _musicjindu = e;
-                                    print("滑动值${e.toInt()}");
-                                    _seekTo(e);
-                                  });
-                                }),
-                          ),
-                          Text("$_maxtime_xianshi",style: TextStyle(color: Colors.white54),)
-                        ],
-                      ),
-                    ),
-                    //控制器的面板
-                    Container(
-                        margin: EdgeInsets.fromLTRB(0, 0, 14, 0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                        ),
+                        //大图片
+                        Stack(
                           children: [
-                            SizedBox(
-                              height: 62,
-                              width: 62,
-                              child: IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(
-                                    Icons.skip_previous_rounded,
-                                    size: 62,
-                                    color: Colors.white54,
-                                  )),
-                            ),
                             Container(
-                                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                                child: SizedBox(
-                                  height: 62,
-                                  width: 62,
-                                  child: Container(
-                                      child: IconButton(
-                                          onPressed: () {
-                                            if (_ispauseMusic == false &&
-                                                _isfirstplay == false) {
-                                              _pauseMusic(); //暂停播放
-                                              setState(() {
-                                                _ispauseMusic = !_ispauseMusic;
-                                              });
-                                            } else if (_ispauseMusic == true &&
-                                                _isfirstplay == false) {
-                                              _resumeMusic(); //恢复播放
-                                              setState(() {
-                                                _ispauseMusic = !_ispauseMusic;
-                                              });
-                                            } else if (_isfirstplay == true) {
-                                              _playMusic(mp3url); //开始播放
-
-                                              _isfirstplay = false;
-                                            }
-                                          },
-                                          icon: _ispauseMusic
-                                              ? Icon(
-                                                  Icons.play_circle_rounded,
-                                                  size: 62,
-                                                  color: Colors.white54,
-                                                )
-                                              : Icon(
-                                                  Icons.pause,
-                                                  size: 62,
-                                                  color: Colors.white54,
-                                                ))),
-                                )),
-                            SizedBox(
-                              height: 62,
-                              width: 62,
-                              child: IconButton(
-                                  onPressed: _music_qiehuan,
-                                  icon: Icon(
-                                    Icons.skip_next_rounded,
-                                    size: 62,
-                                    color: Colors.white54,
-                                  )),
-                            ),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15)),
+                              child: Blur(
+                                borderRadius: BorderRadius.circular(15),
+                                blur: 0.5,
+                                blurColor: Colors.grey,
+                                colorOpacity: 0.2,
+                                child: Container(
+                                  height: 300,
+                                  width: 310,
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(15),
+                                    child: FadeInImage(
+                                      matchTextDirection: true,
+                                      fit: BoxFit.cover,
+                                      placeholder: AssetImage(_zhanweitupian),
+                                      image: NetworkImage(picUrl),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
                           ],
-                        )),
-                    Container(
-                        margin: EdgeInsets.all(15),
-                        child: _isfail
-                            ? Text(
-                                "未找到歌曲信息",
+                        ),
+                        //评论
+                        Container(
+                            margin: EdgeInsets.fromLTRB(12, 10, 12, 0),
+                            child: Text(
+                              "$_content",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.white54,
+                              ),
+                            )),
+
+                        //进度条
+                        Container(
+                          margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Container(
+                                  width: 28,
+                                  child: Text(
+                                    "$_musicjindu_xianshi",
+                                    style: TextStyle(color: Colors.white54),
+                                  )),
+                              Expanded(
+                                flex: 1,
+                                child: Slider(
+                                    activeColor: Colors.blueGrey,
+                                    min: 0,
+                                    max: _maxtime + 900,
+                                    value: _musicjindu,
+                                    onChanged: (e) {
+                                      setState(() {
+                                        _musicjindu = e;
+                                        print("滑动值${e.toInt()}");
+                                        _seekTo(e);
+                                      });
+                                    }),
+                              ),
+                              Text(
+                                "$_maxtime_xianshi",
                                 style: TextStyle(color: Colors.white54),
                               )
-                            : Container())
+                            ],
+                          ),
+                        ),
+                        //控制器的面板
+                        Container(
+                            margin: EdgeInsets.fromLTRB(0, 0, 14, 0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  height: 62,
+                                  width: 62,
+                                  child: IconButton(
+                                      onPressed: () {},
+                                      icon: Icon(
+                                        Icons.skip_previous_rounded,
+                                        size: 62,
+                                        color: Colors.white54,
+                                      )),
+                                ),
+                                Container(
+                                    padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                    child: SizedBox(
+                                      height: 62,
+                                      width: 62,
+                                      child: Container(
+                                          child: IconButton(
+                                              onPressed: () {
+                                                if (_ispauseMusic == false &&
+                                                    _isfirstplay == false) {
+                                                  _pauseMusic(); //暂停播放
+                                                  setState(() {
+                                                    _ispauseMusic =
+                                                        !_ispauseMusic;
+                                                  });
+                                                } else if (_ispauseMusic ==
+                                                        true &&
+                                                    _isfirstplay == false) {
+                                                  _resumeMusic(); //恢复播放
+                                                  setState(() {
+                                                    _ispauseMusic =
+                                                        !_ispauseMusic;
+                                                  });
+                                                } else if (_isfirstplay ==
+                                                    true) {
+                                                  _playMusic(mp3url); //开始播放
+
+                                                  _isfirstplay = false;
+                                                }
+                                              },
+                                              icon: _ispauseMusic
+                                                  ? Icon(
+                                                      Icons.play_circle_rounded,
+                                                      size: 62,
+                                                      color: Colors.white54,
+                                                    )
+                                                  : Icon(
+                                                      Icons.pause,
+                                                      size: 62,
+                                                      color: Colors.white54,
+                                                    ))),
+                                    )),
+                                SizedBox(
+                                  height: 62,
+                                  width: 62,
+                                  child: IconButton(
+                                      onPressed: _music_qiehuan,
+                                      icon: Icon(
+                                        Icons.skip_next_rounded,
+                                        size: 62,
+                                        color: Colors.white54,
+                                      )),
+                                ),
+                              ],
+                            )),
+                        Container(
+                            margin: EdgeInsets.all(15),
+                            child: _isfail
+                                ? Text(
+                                    "未找到歌曲信息",
+                                    style: TextStyle(color: Colors.white54),
+                                  )
+                                : Container())
+                      ],
+                    )
                   ],
-                )
-              ],
-            );
-          }
-        },
-      ),
+                );
+              }
+            },
+          ),
+          onWillPop: () async {
+            audioPlayer.stop();
+            return true;
+          }),
     );
   }
 }
