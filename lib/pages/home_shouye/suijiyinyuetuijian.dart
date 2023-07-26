@@ -257,7 +257,7 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Container(
-                                  width: 28,
+                                width: 35,
                                   child: Text(
                                     "$_musicjindu_xianshi",
                                     style: TextStyle(color: Colors.white54),

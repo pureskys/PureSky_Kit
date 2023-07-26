@@ -54,7 +54,7 @@ class _xingchendahaiState extends State<xingchendahai> {
             margin: EdgeInsets.fromLTRB(0, MediaQuery
                 .of(context)
                 .padding
-                .top + 12, 0, 2),
+                .top + 2, 0, 2),
             child: Center(
               child: WebViewWidget(
                 controller: controller,
