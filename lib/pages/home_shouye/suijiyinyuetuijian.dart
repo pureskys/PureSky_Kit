@@ -168,7 +168,6 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
                 mp3url = json['mp3url'];
                 _content = json['content'];
                 _huoquxinxi(mp3url);
-
                 return Stack(
                   children: [
                     Blur(

@@ -1,16 +1,16 @@
 import 'package:blur/blur.dart';
 import 'package:flutter/material.dart';
 
+
 class all_gongju extends StatefulWidget {
   const all_gongju({super.key});
-
   @override
   State<all_gongju> createState() => _all_gongjuState();
 }
 
 class _all_gongjuState extends State<all_gongju> {
   var _appbartile = "全部工具";
-
+  List _quanbugongju = []; //储存页面显示布局方法
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -62,6 +62,7 @@ class _all_gongjuState extends State<all_gongju> {
                     flex: 1,
                     child: ListView(
                       children: [
+                        // 大类功能渲染
                         ExpansionTile(
                           title: Text("日常工具"),
                           children: [
@@ -175,35 +176,7 @@ class _all_gongjuState extends State<all_gongju> {
                                     crossAxisSpacing: 15,
                                     childAspectRatio: 2),
                                 children: [
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
-                                  gongju_zujuan(),
+
                                 ],
                               ),
                             )
@@ -218,6 +191,7 @@ class _all_gongjuState extends State<all_gongju> {
   }
 }
 
+// 每一个功能的初始化地点
 class gongju_zujuan extends StatefulWidget {
   const gongju_zujuan({super.key});
 
@@ -238,7 +212,10 @@ class _gongju_zujuanState extends State<gongju_zujuan> {
                 child: Container(
                   child: ClipRRect(
                     borderRadius: BorderRadius.all(Radius.circular(15)),
-                    child: InkWell(
+                    child: InkWell(  // 每个功能的方法定义
+                      onTap: (){
+
+                      },
                       child: Center(
                         child: Stack(
                           children: [

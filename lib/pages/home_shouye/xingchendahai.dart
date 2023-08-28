@@ -26,13 +26,6 @@ class _xingchendahaiState extends State<xingchendahai> {
       },
       onWebResourceError: (WebResourceError error) {},
       onNavigationRequest: (NavigationRequest request) {
-        if (request.url.startsWith(
-            'https://haikuoshijie.cn/archives/hai-kuo-shi-jie-xin-shou-zhi-nan') ||
-            request.url.startsWith(
-                'https://haikuoshijie.cn/archives/hai-kuo-shi-jie-donate')) {
-          print('不显示');
-          return NavigationDecision.prevent;
-        }
         return NavigationDecision.navigate;
       },
     ))
@@ -54,7 +47,7 @@ class _xingchendahaiState extends State<xingchendahai> {
             margin: EdgeInsets.fromLTRB(0, MediaQuery
                 .of(context)
                 .padding
-                .top + 2, 0, 2),
+                .top + 2, 0, 0),
             child: Center(
               child: WebViewWidget(
                 controller: controller,

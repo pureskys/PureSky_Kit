@@ -137,7 +137,10 @@ class _lishishangdejintianState extends State<lishishangdejintian> {
                 "$_appbartile",
                 maxLines: 3,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18, color: Colors.black87,),
+                style: TextStyle(
+                  fontSize: 18,
+                  color: Colors.black87,
+                ),
               ),
             ),
           ),
@@ -162,36 +165,46 @@ class _lishishangdejintianState extends State<lishishangdejintian> {
                   future: history_json_success,
                   builder:
                       (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-                    for (var i
-                        in jsonDecode(history_today_json.toString())['data']) {
-                      var year = i['year'];
-                      var month = i['month'];
-                      var day = i['day'];
-                      var title = i['title'];
-                      var details1 = i['details'];
-                      var details = "       " +
-                          details1.trim().replaceAll('　', ''); //展示在标签页的文本
-                      var details3 =
-                          details1.replaceAll('　', '0-='); //详情页面用来解析后展示的文本
-                      var details4 = details3.replaceAll('\n','');
-                      var details2 =
-                          "       " + details4.replaceAll("0-=", "\n       ");
-                      history_widget.add(neirongkapian(
-                        year: year,
-                        month: month,
-                        day: day,
-                        title: title,
-                        details: details,
-                        details2: details2,
-                        onpressed: _settile,
-                      ));
-                    }
-                    if (snapshot.hasData) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      // 异步操作正在进行中，显示加载指示器
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else if(snapshot.hasData){
+                      for (var i
+                      in jsonDecode(history_today_json.toString())['data']) {
+                        var year = i['year'];
+                        var month = i['month'];
+                        var day = i['day'];
+                        var title = i['title'];
+                        var details1 = i['details'];
+                        var details = "       " +
+                            details1.trim().replaceAll('　', ''); //展示在标签页的文本
+                        var details3 =
+                        details1.replaceAll('　', '0-='); //详情页面用来解析后展示的文本
+                        var details4 = details3.replaceAll('\n', '');
+                        var details2 =
+                            "       " + details4.replaceAll("0-=", "\n       ");
+                        history_widget.add(neirongkapian(
+                          year: year,
+                          month: month,
+                          day: day,
+                          title: title,
+                          details: details,
+                          details2: details2,
+                          onpressed: _settile,
+                        ));
+                      }
                       return ListView(
                         children: history_widget,
                       );
+
                     }
-                    return Container();
+                    else {
+                      return Container();
+                    }
                   },
                 ),
               )
@@ -253,7 +266,7 @@ class _neirongkapianState extends State<neirongkapian> {
                         children: [
                           Text(
                             "${widget.details2}",
-                            style: TextStyle(fontSize: 17,height: 1.6),
+                            style: TextStyle(fontSize: 17, height: 1.6),
                           )
                         ],
                       ))
@@ -263,6 +276,7 @@ class _neirongkapianState extends State<neirongkapian> {
           );
         });
   }
+
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
