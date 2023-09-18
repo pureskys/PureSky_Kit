@@ -31,6 +31,8 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
   var _content; //歌曲的热评
   var _zhanweitupian = 'images/mohuse.webp'; //占位图设置
   var _isfail = false;
+  List yinyuehuancun = []; //创建临时音乐缓存字典
+  var _huancun_xiaobiaojianshu = 2; //缓存下表减少数
 
   @override
   void initState() {
@@ -39,23 +41,20 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
     super.initState();
   }
 
-//获取歌曲信息
-  Future<void> _huoquxinxi(_mp3url) async {
-    await audioPlayer.setSourceUrl(_mp3url);
-    Duration? maxDuration = await audioPlayer.getDuration();
-    _maxtime = maxDuration!.inMilliseconds.toDouble();
-    setState(() {
-      var a = _maxtime / 1000 / 60;
-      _maxtime_xianshi = a.toStringAsFixed(2).replaceAll('.', ':');
-    });
-  }
-
-//歌歌曲切换操作
-  Future<void> _music_qiehuan() async {
-    audioPlayer.stop();
-    await _net();
-    setState(() {
+// 切换上一首歌曲
+  Future<void> _shangyishou() async {
+    // 获取临时缓存的音乐json数据
+    var changdu = yinyuehuancun.length; //获取缓存长度
+    if(changdu < 2){
+      print("缓存长度不够");
+    }else{
       _isfail = false;
+      int i = changdu - _huancun_xiaobiaojianshu; //标注缓存倒数下标
+      print('获取的缓存数据${yinyuehuancun[i]}');
+      setState(() {
+        _netjson = yinyuehuancun[i];
+      });
+      _huancun_xiaobiaojianshu = _huancun_xiaobiaojianshu + 1;
       _zhanweitupian = 'images/mohuse.webp';
       _isfirstplay = true;
       _ispauseMusic = true;
@@ -68,7 +67,98 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
       mp3url = json['mp3url'];
       _content = json['content'];
       _huoquxinxi(mp3url);
+    }
+
+  }
+
+//获取歌曲信息
+  Future<void> _huoquxinxi(_mp3url) async {
+    await audioPlayer.setSourceUrl(_mp3url);
+    Duration? maxDuration = await audioPlayer.getDuration();
+    _maxtime = maxDuration!.inMilliseconds.toDouble();
+    setState(() {
+      var a = _maxtime / 1000;
+      var d = a.toInt();
+      var c = Duration(minutes: d).toString().substring(0, 4);
+      _maxtime_xianshi = c;
     });
+  }
+
+  void _anniucaozuo() {
+    //播放按钮的操作
+    if (_ispauseMusic == false && _isfirstplay == false) {
+      _pauseMusic(); //暂停播放
+      setState(() {
+        _ispauseMusic = !_ispauseMusic;
+      });
+    } else if (_ispauseMusic == true && _isfirstplay == false) {
+      _resumeMusic(); //恢复播放
+      setState(() {
+        _ispauseMusic = !_ispauseMusic;
+      });
+    } else if (_isfirstplay == true) {
+      _playMusic(mp3url); //开始播放
+
+      _isfirstplay = false;
+    }
+  }
+
+//歌歌曲切换操作
+  Future<void> _music_qiehuan() async {
+    audioPlayer.stop();
+    try {
+      var key = yinyuehuancun.length - 1;
+      var key0 = yinyuehuancun.length - _huancun_xiaobiaojianshu;
+      var _id1 =
+          jsonDecode(yinyuehuancun[key].toString())['data']['id']; // 获取缓存最后的id
+      var _id2 =
+          jsonDecode(yinyuehuancun[key0].toString())['data']
+              ['id'];
+      if (_id1 == _id2) {
+        _huancun_xiaobiaojianshu = 2;
+        await _net();
+        setState(() {
+          _isfail = false;
+          _zhanweitupian = 'images/mohuse.webp';
+          _isfirstplay = true;
+          _ispauseMusic = true;
+          _musicjindu = 0.0;
+          _seekTo(0);
+          var json = jsonDecode(_netjson.toString())['data'];
+          name = json['name'];
+          auther = json['auther'];
+          picUrl = json['picUrl'];
+          mp3url = json['mp3url'];
+          _content = json['content'];
+          _huoquxinxi(mp3url);
+        });
+      } else {
+        print("使用缓存操作");
+        _huancun_xiaobiaojianshu = _huancun_xiaobiaojianshu - 1;
+        var i = yinyuehuancun.length - _huancun_xiaobiaojianshu;
+        setState(() {
+          _netjson = yinyuehuancun[i];
+        });
+      }
+    } catch (e) {
+      _huancun_xiaobiaojianshu = 2;
+      await _net();
+      setState(() {
+        _isfail = false;
+        _zhanweitupian = 'images/mohuse.webp';
+        _isfirstplay = true;
+        _ispauseMusic = true;
+        _musicjindu = 0.0;
+        _seekTo(0);
+        var json = jsonDecode(_netjson.toString())['data'];
+        name = json['name'];
+        auther = json['auther'];
+        picUrl = json['picUrl'];
+        mp3url = json['mp3url'];
+        _content = json['content'];
+        _huoquxinxi(mp3url);
+      });
+    }
   }
 
 //获取网易云热门音乐json数据
@@ -78,7 +168,9 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
       Response response = await dio.get('https://api.vvhan.com/api/reping');
       if (response.statusCode == 200) {
         _netjson = response;
-        print("获取的数据$_netjson");
+        yinyuehuancun.add(response);
+        print("获取的网络数据$_netjson");
+        print("获取的缓存数据$yinyuehuancun");
       }
     } catch (e) {
       debugPrint('获取网易云音乐数据失败$e');
@@ -101,7 +193,7 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
     } else {
       await audioPlayer.play(UrlSource(_musicurl));
       //音乐播放完毕的操作
-      await audioPlayer.onPlayerComplete.listen((event) {
+      await audioPlayer.onPlayerComplete.listen((event) async {
         setState(() {
           _isfirstplay = true;
           _ispauseMusic = true;
@@ -113,17 +205,21 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
       Duration? maxDuration = await audioPlayer.getDuration();
       _maxtime = maxDuration!.inMilliseconds.toDouble();
       setState(() {
-        var a = _maxtime / 1000 / 60;
-        _maxtime_xianshi = a.toStringAsFixed(2).replaceAll('.', ':');
+        var a = _maxtime / 1000;
+        var d = a.toInt();
+        var c = Duration(minutes: d).toString().substring(0, 4);
+        _maxtime_xianshi = c;
       });
       //获取音乐进度
       audioPlayer.onPositionChanged.listen((event) {
         setState(() {
           _musicjindu = event.inMilliseconds.toDouble();
-          var b = _musicjindu / 1000 / 60;
-          _musicjindu_xianshi = b.toStringAsFixed(2).replaceAll('.', ':');
+          var b = _musicjindu / 1000;
+          var d = b.toInt();
+          var c = Duration(minutes: d).toString().substring(0, 4);
+          _musicjindu_xianshi = c;
         });
-        print("进度$_musicjindu");
+        debugPrint("进度$_musicjindu_xianshi");
       });
 
       debugPrint("开始播放音乐$maxDuration");
@@ -256,7 +352,7 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Container(
-                                width: 35,
+                                  width: 35,
                                   child: Text(
                                     "$_musicjindu_xianshi",
                                     style: TextStyle(color: Colors.white54),
@@ -293,7 +389,7 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
                                   height: 62,
                                   width: 62,
                                   child: IconButton(
-                                      onPressed: () {},
+                                      onPressed: _shangyishou,
                                       icon: Icon(
                                         Icons.skip_previous_rounded,
                                         size: 62,
@@ -307,29 +403,7 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
                                       width: 62,
                                       child: Container(
                                           child: IconButton(
-                                              onPressed: () {
-                                                if (_ispauseMusic == false &&
-                                                    _isfirstplay == false) {
-                                                  _pauseMusic(); //暂停播放
-                                                  setState(() {
-                                                    _ispauseMusic =
-                                                        !_ispauseMusic;
-                                                  });
-                                                } else if (_ispauseMusic ==
-                                                        true &&
-                                                    _isfirstplay == false) {
-                                                  _resumeMusic(); //恢复播放
-                                                  setState(() {
-                                                    _ispauseMusic =
-                                                        !_ispauseMusic;
-                                                  });
-                                                } else if (_isfirstplay ==
-                                                    true) {
-                                                  _playMusic(mp3url); //开始播放
-
-                                                  _isfirstplay = false;
-                                                }
-                                              },
+                                              onPressed: _anniucaozuo,
                                               icon: _ispauseMusic
                                                   ? Icon(
                                                       Icons.play_circle_rounded,

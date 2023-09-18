@@ -10,7 +10,6 @@ class all_gongju extends StatefulWidget {
 
 class _all_gongjuState extends State<all_gongju> {
   var _appbartile = "全部工具";
-  List _quanbugongju = []; //储存页面显示布局方法
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
