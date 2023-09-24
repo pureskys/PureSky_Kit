@@ -33,6 +33,7 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
   var _isfail = false;
   List yinyuehuancun = []; //创建临时音乐缓存字典
   var _huancun_xiaobiaojianshu = 2; //缓存下表减少数
+  bool _shangyishou_key = false; //标注是否点击了上一首
 
   @override
   void initState() {
@@ -45,43 +46,60 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
   Future<void> _shangyishou() async {
     // 获取临时缓存的音乐json数据
     var changdu = yinyuehuancun.length; //获取缓存长度
-    if(changdu < 2){
+    if (changdu < 2) {
       print("缓存长度不够");
-    }else{
-      _isfail = false;
-      int i = changdu - _huancun_xiaobiaojianshu; //标注缓存倒数下标
-      print('获取的缓存数据${yinyuehuancun[i]}');
-      setState(() {
-        _netjson = yinyuehuancun[i];
-      });
-      _huancun_xiaobiaojianshu = _huancun_xiaobiaojianshu + 1;
-      _zhanweitupian = 'images/mohuse.webp';
-      _isfirstplay = true;
-      _ispauseMusic = true;
-      _musicjindu = 0.0;
-      _seekTo(0);
-      var json = jsonDecode(_netjson.toString())['data'];
-      name = json['name'];
-      auther = json['auther'];
-      picUrl = json['picUrl'];
-      mp3url = json['mp3url'];
-      _content = json['content'];
-      _huoquxinxi(mp3url);
+    } else {
+      if (_shangyishou_key == false) {
+        _shangyishou_key = true;
+        _isfail = false;
+        int i = changdu - _huancun_xiaobiaojianshu; //标注缓存倒数下标
+        print('获取的缓存数据${yinyuehuancun[i]}');
+        setState(() {
+          _isfail = false;
+          _isfirstplay = true;
+          _ispauseMusic = true;
+          _musicjindu = 0.0;
+          _seekTo(0);
+          _netjson = yinyuehuancun[i];
+        });
+        _huancun_xiaobiaojianshu = _huancun_xiaobiaojianshu + 1;
+      } else if (_shangyishou_key == true) {
+        _shangyishou_key = true;
+        _isfail = false;
+        int i = changdu - _huancun_xiaobiaojianshu; //标注缓存倒数下标
+        print('获取的缓存数据${yinyuehuancun[i]}');
+        setState(() {
+          _isfail = false;
+          _isfirstplay = true;
+          _ispauseMusic = true;
+          _musicjindu = 0.0;
+          _seekTo(0);
+          _netjson = yinyuehuancun[i];
+        });
+        _huancun_xiaobiaojianshu = _huancun_xiaobiaojianshu + 1;
+      }
     }
-
   }
 
 //获取歌曲信息
   Future<void> _huoquxinxi(_mp3url) async {
-    await audioPlayer.setSourceUrl(_mp3url);
-    Duration? maxDuration = await audioPlayer.getDuration();
-    _maxtime = maxDuration!.inMilliseconds.toDouble();
-    setState(() {
-      var a = _maxtime / 1000;
-      var d = a.toInt();
-      var c = Duration(minutes: d).toString().substring(0, 4);
-      _maxtime_xianshi = c;
-    });
+    try {
+      await audioPlayer.setSourceUrl(_mp3url);
+      Duration? maxDuration = await audioPlayer.getDuration();
+      _maxtime = maxDuration!.inMilliseconds.toDouble();
+      setState(() {
+        var a = _maxtime / 1000;
+        var d = a.toInt();
+        var c = Duration(minutes: d).toString().substring(0, 4);
+        _maxtime_xianshi = c;
+      });
+    } catch (e) {
+        _isfirstplay = true;
+        _ispauseMusic = true;
+        _musicjindu = 0.0;
+        _seekTo(0);
+      print("获取歌曲长度失败");
+    }
   }
 
   void _anniucaozuo() {
@@ -105,25 +123,19 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
 
 //歌歌曲切换操作
   Future<void> _music_qiehuan() async {
-    audioPlayer.stop();
     try {
       var key = yinyuehuancun.length - 1;
-      var key0 = yinyuehuancun.length - _huancun_xiaobiaojianshu;
+      var key0 = yinyuehuancun.length - _huancun_xiaobiaojianshu + 1;
       var _id1 =
           jsonDecode(yinyuehuancun[key].toString())['data']['id']; // 获取缓存最后的id
-      var _id2 =
-          jsonDecode(yinyuehuancun[key0].toString())['data']
-              ['id'];
+      var _id2 = jsonDecode(yinyuehuancun[key0].toString())['data']['id'];
+      print(
+          "id1=$_id1加${jsonDecode(yinyuehuancun[key].toString())['data']},id2=$_id2加${jsonDecode(yinyuehuancun[key0].toString())['data']}");
       if (_id1 == _id2) {
         _huancun_xiaobiaojianshu = 2;
         await _net();
+        Future.delayed(Duration(milliseconds: 1800)); //等待1.8秒
         setState(() {
-          _isfail = false;
-          _zhanweitupian = 'images/mohuse.webp';
-          _isfirstplay = true;
-          _ispauseMusic = true;
-          _musicjindu = 0.0;
-          _seekTo(0);
           var json = jsonDecode(_netjson.toString())['data'];
           name = json['name'];
           auther = json['auther'];
@@ -134,30 +146,42 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
         });
       } else {
         print("使用缓存操作");
-        _huancun_xiaobiaojianshu = _huancun_xiaobiaojianshu - 1;
-        var i = yinyuehuancun.length - _huancun_xiaobiaojianshu;
-        setState(() {
-          _netjson = yinyuehuancun[i];
-        });
+        if (_shangyishou_key == false) {
+          _huancun_xiaobiaojianshu = _huancun_xiaobiaojianshu - 1;
+          var i = yinyuehuancun.length - _huancun_xiaobiaojianshu;
+          setState(() {
+            _isfail = false;
+            _isfirstplay = true;
+            _ispauseMusic = true;
+            _musicjindu = 0.0;
+            _seekTo(0);
+            _netjson = yinyuehuancun[i];
+          });
+        } else if (_shangyishou_key == true) {
+          _huancun_xiaobiaojianshu = _huancun_xiaobiaojianshu - 2;
+          _shangyishou_key = false;
+          var i = yinyuehuancun.length - _huancun_xiaobiaojianshu;
+          setState(() {
+            _isfail = false;
+            _isfirstplay = true;
+            _ispauseMusic = true;
+            _musicjindu = 0.0;
+            _seekTo(0);
+            _netjson = yinyuehuancun[i];
+          });
+        }
       }
     } catch (e) {
+      print("下一首歌异常处理");
       _huancun_xiaobiaojianshu = 2;
-      await _net();
       setState(() {
         _isfail = false;
-        _zhanweitupian = 'images/mohuse.webp';
         _isfirstplay = true;
         _ispauseMusic = true;
         _musicjindu = 0.0;
         _seekTo(0);
-        var json = jsonDecode(_netjson.toString())['data'];
-        name = json['name'];
-        auther = json['auther'];
-        picUrl = json['picUrl'];
-        mp3url = json['mp3url'];
-        _content = json['content'];
-        _huoquxinxi(mp3url);
       });
+      await _net();
     }
   }
 
@@ -389,7 +413,18 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
                                   height: 62,
                                   width: 62,
                                   child: IconButton(
-                                      onPressed: _shangyishou,
+                                      onPressed: () {
+                                        try {
+                                          audioPlayer.stop();
+                                          audioPlayer.dispose();
+                                          audioPlayer = AudioPlayer();
+                                        } catch (e) {
+                                          print("上一首异常：摧毁对象失败");
+                                        }
+                                        _isfail = false;
+                                        _ispauseMusic = true;
+                                        _shangyishou(); //上一首
+                                      },
                                       icon: Icon(
                                         Icons.skip_previous_rounded,
                                         size: 62,
@@ -420,7 +455,18 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
                                   height: 62,
                                   width: 62,
                                   child: IconButton(
-                                      onPressed: _music_qiehuan,
+                                      onPressed: () {
+                                        try {
+                                          audioPlayer.stop();
+                                          audioPlayer.dispose();
+                                          audioPlayer = AudioPlayer();
+                                          _isfail = false;
+                                          _ispauseMusic = true;
+                                        } catch (e) {
+                                          print("下一首异常：摧毁对象失败");
+                                        }
+                                        _music_qiehuan();
+                                      },
                                       icon: Icon(
                                         Icons.skip_next_rounded,
                                         size: 62,
