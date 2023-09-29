@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:audioplayers/audioplayers.dart';
@@ -34,6 +35,9 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
   List yinyuehuancun = []; //创建临时音乐缓存字典
   var _huancun_xiaobiaojianshu = 2; //缓存下表减少数
   bool _shangyishou_key = false; //标注是否点击了上一首
+  bool _bofangshunxu = true; // 播放的顺序按钮切换标识
+  var _time_daojishi = 3;  // 倒计时
+  var aaa ;
 
   @override
   void initState() {
@@ -94,10 +98,10 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
         _maxtime_xianshi = c;
       });
     } catch (e) {
-        _isfirstplay = true;
-        _ispauseMusic = true;
-        _musicjindu = 0.0;
-        _seekTo(0);
+      _isfirstplay = true;
+      _ispauseMusic = true;
+      _musicjindu = 0.0;
+      _seekTo(0);
       print("获取歌曲长度失败");
     }
   }
@@ -116,7 +120,6 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
       });
     } else if (_isfirstplay == true) {
       _playMusic(mp3url); //开始播放
-
       _isfirstplay = false;
     }
   }
@@ -134,7 +137,7 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
       if (_id1 == _id2) {
         _huancun_xiaobiaojianshu = 2;
         await _net();
-        Future.delayed(Duration(milliseconds: 1800)); //等待1.8秒
+        await Future.delayed(Duration(milliseconds: 1800)); //等待1.8秒
         setState(() {
           var json = jsonDecode(_netjson.toString())['data'];
           name = json['name'];
@@ -154,6 +157,7 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
             _isfirstplay = true;
             _ispauseMusic = true;
             _musicjindu = 0.0;
+            _musicjindu_xianshi = '0:00';
             _seekTo(0);
             _netjson = yinyuehuancun[i];
           });
@@ -214,42 +218,104 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
       setState(() {
         _isfail = true;
       });
-    } else {
-      await audioPlayer.play(UrlSource(_musicurl));
-      //音乐播放完毕的操作
-      await audioPlayer.onPlayerComplete.listen((event) async {
+      Timer.periodic(Duration(milliseconds: 1000), (timer) async{
         setState(() {
-          _isfirstplay = true;
-          _ispauseMusic = true;
-          _musicjindu = 0.0;
-          _seekTo(0);
+          _time_daojishi = _time_daojishi - 1;
         });
-      });
-      // 获取音乐的总时长
-      Duration? maxDuration = await audioPlayer.getDuration();
-      _maxtime = maxDuration!.inMilliseconds.toDouble();
-      setState(() {
-        var a = _maxtime / 1000;
-        var d = a.toInt();
-        var c = Duration(minutes: d).toString().substring(0, 4);
-        _maxtime_xianshi = c;
-      });
-      //获取音乐进度
-      audioPlayer.onPositionChanged.listen((event) {
-        setState(() {
-          _musicjindu = event.inMilliseconds.toDouble();
-          var b = _musicjindu / 1000;
-          var d = b.toInt();
-          var c = Duration(minutes: d).toString().substring(0, 4);
-          _musicjindu_xianshi = c;
-        });
-        debugPrint("进度$_musicjindu_xianshi");
+        if(_time_daojishi == 0){
+          setState(() {
+            _isfail = false;
+          });
+          try {
+            audioPlayer.dispose();
+            audioPlayer = AudioPlayer();
+            _isfail = false;
+            _ispauseMusic = true;
+            setState(() {
+              _musicjindu_xianshi = "0:00";
+              _musicjindu = 0.0;
+              _isfirstplay = true;
+            });
+          } catch (e) {
+            print("下一首异常：摧毁对象失败");
+          }
+          await _music_qiehuan();
+          _anniucaozuo();
+          _time_daojishi = 3;
+          timer.cancel();  // 关闭计时器
+        }
       });
 
-      debugPrint("开始播放音乐$maxDuration");
-      setState(() {
-        _ispauseMusic = !_ispauseMusic;
+
+    } else {
+      await audioPlayer.play(UrlSource(_musicurl));
+      // 获取音乐的总时长
+      try {
+        Duration? maxDuration = await audioPlayer.getDuration();
+        _maxtime = maxDuration!.inMilliseconds.toDouble();
+        print("音乐时常：$_maxtime");
+        setState(() {
+          var a = _maxtime / 1000;
+          var d = a.toInt();
+          var c = Duration(minutes: d).toString().substring(0, 4);
+          _maxtime_xianshi = c;
+        });
+        //获取音乐进度
+        await audioPlayer.onPositionChanged.listen((event) {
+          setState(() {
+            _musicjindu = event.inMilliseconds.toDouble();
+            var b = _musicjindu / 1000;
+            var d = b.toInt();
+            var c = Duration(minutes: d).toString().substring(0, 4);
+            _musicjindu_xianshi = c;
+          });
+          debugPrint("进度$_musicjindu_xianshi");
+        });
+        debugPrint("开始播放音乐$maxDuration");
+        setState(() {
+          _ispauseMusic = !_ispauseMusic;
+        });
+      } catch (e) {
+        await Future.delayed(Duration(seconds: 3));
+        try {
+          audioPlayer.dispose();
+          audioPlayer = AudioPlayer();
+        } catch (e) {
+          print("下一首异常：摧毁对象失败");
+        }
+        await _music_qiehuan();
+      }
+      //音乐播放完毕的操作
+      audioPlayer.onPlayerComplete.listen((event) async {
+        if (_bofangshunxu == true) {
+          // 如果是单曲循环则执行这里
+          setState(() {
+            _isfail = false;
+            _musicjindu = 0.0;
+            _musicjindu_xianshi = "0:00";
+          });
+          await audioPlayer.play(UrlSource(_musicurl)); // 播放音乐
+        } else if (_bofangshunxu == false) {
+          // 随机播放执行这里
+          await Future.delayed(Duration(seconds: 2));
+          try {
+            audioPlayer.dispose();
+            audioPlayer = AudioPlayer();
+            _isfail = false;
+            _ispauseMusic = true;
+            setState(() {
+              _musicjindu_xianshi = "0:00";
+              _musicjindu = 0.0;
+              _isfirstplay = true;
+            });
+          } catch (e) {
+            print("下一首异常：摧毁对象失败");
+          }
+          await _music_qiehuan();
+          _anniucaozuo();
+        }
       });
+
     }
   }
 
@@ -405,81 +471,127 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
                         ),
                         //控制器的面板
                         Container(
-                            margin: EdgeInsets.fromLTRB(0, 0, 14, 0),
+                            //播放顺序控制（随机播放。单曲循环）
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.fromLTRB(0, 18, 0, 0),
+                              height: 62,
+                              width: 62,
+                              child: IconButton(
+                                onPressed: () {
+                                  _bofangshunxu = !_bofangshunxu;
+                                },
+                                icon: _bofangshunxu
+                                    ? Icon(
+                                        Icons.repeat_one,
+                                        size: 46,
+                                        color: Colors.white54,
+                                      )
+                                    : Icon(
+                                        Icons.shuffle,
+                                        size: 42,
+                                        color: Colors.white54,
+                                      ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 62,
+                              width: 62,
+                              child: IconButton(
+                                  onPressed: () {
+                                    try {
+                                      audioPlayer.stop();
+                                      audioPlayer.dispose();
+                                      audioPlayer = AudioPlayer();
+                                    } catch (e) {
+                                      print("上一首异常：摧毁对象失败");
+                                    }
+                                    _isfail = false;
+                                    _ispauseMusic = true;
+                                    _shangyishou(); //上一首
+                                  },
+                                  icon: Icon(
+                                    Icons.skip_previous_rounded,
+                                    size: 62,
+                                    color: Colors.white54,
+                                  )),
+                            ),
+                            Container(
+                                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                                child: SizedBox(
                                   height: 62,
                                   width: 62,
-                                  child: IconButton(
-                                      onPressed: () {
-                                        try {
-                                          audioPlayer.stop();
-                                          audioPlayer.dispose();
-                                          audioPlayer = AudioPlayer();
-                                        } catch (e) {
-                                          print("上一首异常：摧毁对象失败");
-                                        }
-                                        _isfail = false;
-                                        _ispauseMusic = true;
-                                        _shangyishou(); //上一首
-                                      },
-                                      icon: Icon(
-                                        Icons.skip_previous_rounded,
-                                        size: 62,
-                                        color: Colors.white54,
-                                      )),
+                                  child: Container(
+                                      child: IconButton(
+                                          onPressed: _anniucaozuo,
+                                          icon: _ispauseMusic
+                                              ? Icon(
+                                                  Icons.play_circle_rounded,
+                                                  size: 62,
+                                                  color: Colors.white54,
+                                                )
+                                              : Icon(
+                                                  Icons.pause,
+                                                  size: 62,
+                                                  color: Colors.white54,
+                                                ))),
+                                )),
+                            SizedBox(
+                              height: 62,
+                              width: 62,
+                              child: IconButton(
+                                  onPressed: () {
+                                    try {
+                                      audioPlayer.dispose();
+                                      audioPlayer = AudioPlayer();
+                                      _isfail = false;
+                                      _ispauseMusic = true;
+                                      setState(() {
+                                        _musicjindu_xianshi = "0:00";
+                                        _musicjindu = 0.0;
+                                        _isfirstplay = true;
+                                      });
+                                    } catch (e) {
+                                      print("下一首异常：摧毁对象失败");
+                                    }
+                                    _music_qiehuan();
+                                  },
+                                  icon: Icon(
+                                    Icons.skip_next_rounded,
+                                    size: 62,
+                                    color: Colors.white54,
+                                  )),
+                            ),
+                            Container(
+                              // 展开播放目录列表
+                              margin: EdgeInsets.fromLTRB(10, 17, 0, 0),
+                              height: 62,
+                              width: 62,
+                              child: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _isfail = true;
+                                    aaa = "开发中。。。具体完成时间不详";
+                                  });
+
+                                },
+                                icon: Icon(
+                                  Icons.queue_music,
+                                  size: 46,
+                                  color: Colors.white54,
                                 ),
-                                Container(
-                                    padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                                    child: SizedBox(
-                                      height: 62,
-                                      width: 62,
-                                      child: Container(
-                                          child: IconButton(
-                                              onPressed: _anniucaozuo,
-                                              icon: _ispauseMusic
-                                                  ? Icon(
-                                                      Icons.play_circle_rounded,
-                                                      size: 62,
-                                                      color: Colors.white54,
-                                                    )
-                                                  : Icon(
-                                                      Icons.pause,
-                                                      size: 62,
-                                                      color: Colors.white54,
-                                                    ))),
-                                    )),
-                                SizedBox(
-                                  height: 62,
-                                  width: 62,
-                                  child: IconButton(
-                                      onPressed: () {
-                                        try {
-                                          audioPlayer.stop();
-                                          audioPlayer.dispose();
-                                          audioPlayer = AudioPlayer();
-                                          _isfail = false;
-                                          _ispauseMusic = true;
-                                        } catch (e) {
-                                          print("下一首异常：摧毁对象失败");
-                                        }
-                                        _music_qiehuan();
-                                      },
-                                      icon: Icon(
-                                        Icons.skip_next_rounded,
-                                        size: 62,
-                                        color: Colors.white54,
-                                      )),
-                                ),
-                              ],
-                            )),
+                              ),
+                            ),
+                          ],
+                        )),
                         Container(
+                            //歌曲加载失败显示的页面
                             margin: EdgeInsets.all(15),
                             child: _isfail
                                 ? Text(
-                                    "未找到歌曲信息",
+                                    "$aaa未找到歌曲信息:$_time_daojishi",
                                     style: TextStyle(color: Colors.white54),
                                   )
                                 : Container())
@@ -491,6 +603,7 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
             },
           ),
           onWillPop: () async {
+            // 拦截返回操作（暂停音乐后再退出）
             audioPlayer.stop();
             return true;
           }),
