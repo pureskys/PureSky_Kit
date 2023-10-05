@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:audioplayers/audioplayers.dart';
 import 'package:blur/blur.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
@@ -36,8 +37,7 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
   var _huancun_xiaobiaojianshu = 2; //缓存下表减少数
   bool _shangyishou_key = false; //标注是否点击了上一首
   bool _bofangshunxu = true; // 播放的顺序按钮切换标识
-  var _time_daojishi = 3;  // 倒计时
-  var aaa ;
+  var _time_daojishi = 3; // 倒计时
 
   @override
   void initState() {
@@ -218,11 +218,11 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
       setState(() {
         _isfail = true;
       });
-      Timer.periodic(Duration(milliseconds: 1000), (timer) async{
+      Timer.periodic(Duration(milliseconds: 1000), (timer) async {
         setState(() {
           _time_daojishi = _time_daojishi - 1;
         });
-        if(_time_daojishi == 0){
+        if (_time_daojishi == 0) {
           setState(() {
             _isfail = false;
           });
@@ -242,11 +242,9 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
           await _music_qiehuan();
           _anniucaozuo();
           _time_daojishi = 3;
-          timer.cancel();  // 关闭计时器
+          timer.cancel(); // 关闭计时器
         }
       });
-
-
     } else {
       await audioPlayer.play(UrlSource(_musicurl));
       // 获取音乐的总时长
@@ -315,7 +313,6 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
           _anniucaozuo();
         }
       });
-
     }
   }
 
@@ -362,11 +359,17 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
                         colorOpacity: 0.2,
                         child: Container(
                           height: double.infinity,
-                          child: FadeInImage(
-                            fit: BoxFit.cover,
-                            placeholder: AssetImage(_zhanweitupian),
-                            image: NetworkImage(picUrl),
-                          ),
+                          child: CachedNetworkImage(
+                              fit: BoxFit.cover,
+                              imageUrl: picUrl,
+                              httpHeaders: {
+                                'User-Agent':
+                                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36 Edg/117.0.2045.55'
+                              },
+                              placeholder: (context, url) => Image.asset(
+                                    _zhanweitupian,
+                                    fit: BoxFit.cover,
+                                  )),
                         )),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -411,12 +414,20 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
                                   width: 310,
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(15),
-                                    child: FadeInImage(
-                                      matchTextDirection: true,
-                                      fit: BoxFit.cover,
-                                      placeholder: AssetImage(_zhanweitupian),
-                                      image: NetworkImage(picUrl),
-                                    ),
+                                    child: CachedNetworkImage(
+                                        matchTextDirection: true,
+                                        fit: BoxFit.cover,
+                                        imageUrl: picUrl,
+                                        httpHeaders: {
+                                          'User-Agent':
+                                              'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36 Edg/117.0.2045.55'
+                                        },
+                                        placeholder: (context, url) =>
+                                            Image.asset(
+                                              _zhanweitupian,
+                                              fit: BoxFit.cover,
+                                              matchTextDirection: true,
+                                            )),
                                   ),
                                 ),
                               ),
@@ -570,13 +581,7 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
                               height: 62,
                               width: 62,
                               child: IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _isfail = true;
-                                    aaa = "开发中。。。具体完成时间不详";
-                                  });
-
-                                },
+                                onPressed: () {},
                                 icon: Icon(
                                   Icons.queue_music,
                                   size: 46,
@@ -591,7 +596,7 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
                             margin: EdgeInsets.all(15),
                             child: _isfail
                                 ? Text(
-                                    "$aaa未找到歌曲信息:$_time_daojishi",
+                                    "未找到歌曲信息:$_time_daojishi",
                                     style: TextStyle(color: Colors.white54),
                                   )
                                 : Container())

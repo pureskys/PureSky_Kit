@@ -42,7 +42,8 @@ dependencies:
   webview_flutter: ^4.2.2
 #  音频播放插件
   audioplayers: ^4.1.0
-
+#  网络图片加载异常处理插件
+  cached_network_image: ^3.3.0
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
