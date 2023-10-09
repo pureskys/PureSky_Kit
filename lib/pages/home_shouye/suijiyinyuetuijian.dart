@@ -322,10 +322,20 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
     debugPrint("暂停播放音乐");
   }
 
-  void _seekTo(double milliseconds) {
+  void _seekTo(double milliseconds) async{
     //拖动音乐
     var key = milliseconds / 1000;
     audioPlayer.seek(Duration(seconds: key.toInt()));
+    await audioPlayer.onPositionChanged.listen((event) {
+      setState(() {
+        _musicjindu = event.inMilliseconds.toDouble();
+        var b = _musicjindu / 1000;
+        var d = b.toInt();
+        var c = Duration(minutes: d).toString().substring(0, 4);
+        _musicjindu_xianshi = c;
+      });
+      debugPrint("进度$_musicjindu_xianshi");
+    });
   }
 
   Widget build(BuildContext context) {

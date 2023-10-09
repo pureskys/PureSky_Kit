@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:blur/blur.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:puresky_kit/pages/home_shouye/all_gongju.dart';
 import 'package:puresky_kit/pages/home_shouye/lishishangdejintian.dart';
 import 'package:puresky_kit/pages/home_shouye/suijiyinyuetuijian.dart';
@@ -20,6 +21,21 @@ var yiyan_json_from_who = ' '; //一言的发布者
 var yiyan_json_from = ' '; //一言的来源
 var app_id = 'hgfhzqkwtkwhanoe'; //api接口的app_id
 var app_secret = 'WXNIbTdEY2g5MGNqRDVEVkxjSU4xdz09'; //api接口的app_secret
+late Future _run_chushihua;
+
+Future getLocalJson(String jsonName) async {
+  // 本地json读取方法
+  var json =
+      jsonDecode(await rootBundle.loadString("json/" + jsonName + ".json"));
+  return json;
+}
+
+Future _chushihua() async {
+  // 初始化方法
+  var a = await getLocalJson('gongnengjson');
+  print("获取的全部功能json数据：$a");
+  return a;
+}
 
 class home_shouye extends StatelessWidget {
   @override
@@ -48,6 +64,7 @@ class _shouye_homeState extends State<shouye_home> {
   //初始化生命周期
   void initState() {
     // TODO: implement initState
+    _run_chushihua = _chushihua();
     super.initState();
   }
 
@@ -91,8 +108,10 @@ class _shouye_homeState extends State<shouye_home> {
                         child: InkWell(
                           onTap: () {
                             //全部工具的点击跳转
-                            Navigator.of(mainContext).push(MaterialPageRoute(
-                                builder: (context) => all_gongju()));
+                            Navigator.push(
+                                mainContext,
+                                MaterialPageRoute(
+                                    builder: (context) => all_gongju()));
                           },
                           child: Container(
                             margin: EdgeInsets.fromLTRB(0, 0, 7, 0),
@@ -137,14 +156,37 @@ class _shouye_homeState extends State<shouye_home> {
                                         child: Container(
                                           margin:
                                               EdgeInsets.fromLTRB(16, 10, 0, 0),
-                                          child: Text(
-                                            '工具总数:0',
-                                            style: TextStyle(
-                                                fontSize: 15.1,
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.white54,
-                                                decoration:
-                                                    TextDecoration.none),
+                                          child: FutureBuilder(
+                                            future: _run_chushihua,
+                                            builder: (BuildContext context,
+                                                AsyncSnapshot<dynamic>
+                                                    snapshot) {
+                                              if (snapshot.connectionState ==
+                                                  ConnectionState.waiting) {
+                                                return Center(
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                );
+                                              }else if (snapshot.hasError) {
+                                                return Text('Error: ${snapshot.error}');
+                                              }else if(snapshot.hasData){
+                                                var json = snapshot.data;
+                                                var changdu = json[0]['Feature'].length;
+                                                print("长度$changdu");
+                                                return Text(
+                                                  '工具总数:$changdu',
+                                                  style: TextStyle(
+                                                      fontSize: 15.1,
+                                                      fontWeight: FontWeight.w600,
+                                                      color: Colors.white54,
+                                                      decoration:
+                                                      TextDecoration.none),
+                                                );
+                                              }
+                                              else{
+                                                return Center();
+                                              }
+                                            },
                                           ),
                                         ),
                                       )
@@ -201,7 +243,8 @@ class _shouye_homeState extends State<shouye_home> {
                                   //右边的下方
                                   flex: 1,
                                   child: InkWell(
-                                    onTap: () {//跳转到随机网易云音乐推荐
+                                    onTap: () {
+                                      //跳转到随机网易云音乐推荐
                                       Navigator.of(mainContext).push(
                                           MaterialPageRoute(
                                               builder: (context) =>
