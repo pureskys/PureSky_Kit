@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:blur/blur.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:puresky_kit/main.dart';
 import 'package:puresky_kit/pages/home_shouye/lishishangdejintian.dart';
 import 'package:puresky_kit/pages/home_shouye/suijiyinyuetuijian.dart';
 import 'package:puresky_kit/pages/home_shouye/xingchendahai.dart';
 import 'package:puresky_kit/pages/tools/vip_yingshi.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class all_gongju extends StatefulWidget {
   const all_gongju({super.key});
@@ -26,15 +28,15 @@ class _all_gongjuState extends State<all_gongju> {
     return json;
   }
 
+// 初始化方法
   Future _chushihua() async {
-    // 初始化方法
     var a = await getLocalJson('gongnengjson');
     print("获取的全部功能json数据：$a");
     return a;
   }
 
+// 路由类创建函数（路由注册函数）
   Object _getPageInstance(String className) {
-    // 路由类创建函数
     switch (className) {
       case 'VIP视频解析':
         return vip_yingshi();
@@ -49,10 +51,18 @@ class _all_gongjuState extends State<all_gongju> {
     }
   }
 
+// 获取外部储存路径函数
+  Future<String?> getExternalStoragePath() async {
+    var directory = await getExternalStorageDirectory();
+    var path = directory!.path;
+    return path;
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     _run_chushihua = _chushihua();
+    getExternalStoragePath();
     super.initState();
   }
 
@@ -118,8 +128,8 @@ class _all_gongjuState extends State<all_gongju> {
                           return Text('Error: ${snapshot.error}');
                         } else if (snapshot.hasData) {
                           // 获取成功的处理方法
-                          List<Widget> gongneng_widget = [];
-                          List<Widget> gongneng_widget1 = [];
+                          List<Widget> gongneng_widget = []; // 最终渲染的大类
+                          List<Widget> gongneng_widget1 = []; // 渲染的小类
                           var json = snapshot.data; // 获取的json文件初始化数据
                           var Feature; //子json大类的json
                           var Tag; // 大类工具名
@@ -147,7 +157,7 @@ class _all_gongjuState extends State<all_gongju> {
                                   shrinkWrap: true,
                                   gridDelegate:
                                       SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2,
+                                          crossAxisCount: 3,
                                           mainAxisSpacing: 15,
                                           crossAxisSpacing: 15,
                                           childAspectRatio: 2),
@@ -187,7 +197,6 @@ class _gongju_zujuanState extends State<gongju_zujuan> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 90,
       child: Center(
         child: Row(
           children: [
@@ -203,6 +212,71 @@ class _gongju_zujuanState extends State<gongju_zujuan> {
                             mainContext,
                             MaterialPageRoute(
                                 builder: (context) => widget.method));
+                      },
+                      onLongPress: () {
+                        // 长按弹出按钮
+                        final RenderBox overlay = Overlay.of(context)!
+                            .context
+                            .findRenderObject() as RenderBox;
+                        final Offset position =
+                            overlay.globalToLocal(Offset.zero);
+                        final RenderBox button =
+                            context.findRenderObject() as RenderBox;
+                        final Offset buttonPosition =
+                            button.localToGlobal(Offset.zero);
+                        final double dx = buttonPosition.dx +
+                            button.size.width / 2 -
+                            position.dx;
+                        final double dy = buttonPosition.dy - position.dy;
+                        showMenu(
+                          context: context,
+                          position: RelativeRect.fromLTRB(dx, dy + 60, dx, 10),
+                          items: [
+                            PopupMenuItem(
+                              child: Container(
+                                child: Center(
+                                  child: Text("收藏"),
+                                ),
+                              ),
+                              onTap: () async {
+                                SharedPreferences sharedPreferences =
+                                    await SharedPreferences.getInstance();
+                                try {
+                                  var _isKey =
+                                      sharedPreferences.containsKey('shoucang');
+                                  if (!_isKey) {
+                                    // 如果'shoucang'键不存在，则创建一个新的收藏列表并保存
+                                    var _scJson = [widget.name];
+                                    var _scJsonToString = jsonEncode(_scJson);
+                                    await sharedPreferences.setString(
+                                        'shoucang', _scJsonToString);
+                                    print('新建收藏缓存成功$_scJsonToString');
+                                  } else {
+                                    var _scJsonStr =
+                                        sharedPreferences.getString('shoucang');
+                                    var _scJson = jsonDecode(_scJsonStr!)
+                                        as List<dynamic>;
+
+                                    // 检查新的收藏项是否已经存在于列表中
+                                    if (!_scJson.contains(widget.name)) {
+                                      _scJson.add(widget.name);
+                                      var _scJsonToString = jsonEncode(_scJson);
+                                      await sharedPreferences.setString(
+                                          'shoucang', _scJsonToString);
+                                      print('收藏缓存为 $_scJson');
+                                    } else {
+                                      print('该项已经存在于收藏列表中');
+
+                                    }
+                                  }
+                                } catch (e) {
+                                  print('缓存创建出错，已清空缓存 $e');
+                                  sharedPreferences.clear();
+                                }
+                              },
+                            ),
+                          ],
+                        );
                       },
                       child: Center(
                         child: Stack(
@@ -226,8 +300,8 @@ class _gongju_zujuanState extends State<gongju_zujuan> {
                                 child: Text(
                                   "${widget.name}",
                                   style: TextStyle(
-                                      fontSize: 19,
-                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
                                       color: Colors.black54),
                                 ),
                               ),

@@ -7,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:puresky_kit/pages/home_shouye/all_gongju.dart';
 import 'package:puresky_kit/pages/home_shouye/lishishangdejintian.dart';
 import 'package:puresky_kit/pages/home_shouye/suijiyinyuetuijian.dart';
+import 'package:puresky_kit/pages/home_shouye/wode_shoucang.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../main.dart';
 import '../home_shouye/xingchendahai.dart';
@@ -21,8 +23,8 @@ var yiyan_json_from_who = ' '; //一言的发布者
 var yiyan_json_from = ' '; //一言的来源
 var app_id = 'hgfhzqkwtkwhanoe'; //api接口的app_id
 var app_secret = 'WXNIbTdEY2g5MGNqRDVEVkxjSU4xdz09'; //api接口的app_secret
-late Future _run_chushihua;
-
+late Future _run_chushihua; // 总工具数初始化函数中转
+late Future _run_chushihua1; //收藏数初始化函数中转
 Future getLocalJson(String jsonName) async {
   // 本地json读取方法
   var json =
@@ -30,11 +32,22 @@ Future getLocalJson(String jsonName) async {
   return json;
 }
 
+//总工具数的初始化函数
 Future _chushihua() async {
   // 初始化方法
   var a = await getLocalJson('gongnengjson');
   print("获取的全部功能json数据：$a");
   return a;
+}
+
+//收藏数初始化函数
+Future _chushihua1() async {
+  // 初始化方法
+  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+  var a = sharedPreferences.getString('shoucang');
+  var b = jsonDecode(a.toString());
+  var c = b.length;
+  return c;
 }
 
 class home_shouye extends StatelessWidget {
@@ -65,6 +78,7 @@ class _shouye_homeState extends State<shouye_home> {
   void initState() {
     // TODO: implement initState
     _run_chushihua = _chushihua();
+    _run_chushihua1 = _chushihua1();
     super.initState();
   }
 
@@ -167,23 +181,25 @@ class _shouye_homeState extends State<shouye_home> {
                                                   child:
                                                       CircularProgressIndicator(),
                                                 );
-                                              }else if (snapshot.hasError) {
-                                                return Text('Error: ${snapshot.error}');
-                                              }else if(snapshot.hasData){
+                                              } else if (snapshot.hasError) {
+                                                return Text(
+                                                    'Error: ${snapshot.error}');
+                                              } else if (snapshot.hasData) {
                                                 var json = snapshot.data;
-                                                var changdu = json[0]['Feature'].length;
+                                                var changdu =
+                                                    json[0]['Feature'].length;
                                                 print("长度$changdu");
                                                 return Text(
                                                   '工具总数:$changdu',
                                                   style: TextStyle(
                                                       fontSize: 15.1,
-                                                      fontWeight: FontWeight.w600,
+                                                      fontWeight:
+                                                          FontWeight.w600,
                                                       color: Colors.white54,
                                                       decoration:
-                                                      TextDecoration.none),
+                                                          TextDecoration.none),
                                                 );
-                                              }
-                                              else{
+                                              } else {
                                                 return Center();
                                               }
                                             },
@@ -349,61 +365,96 @@ class _shouye_homeState extends State<shouye_home> {
                     Expanded(
                         //右边容器
                         flex: 1,
-                        child: Container(
-                          margin: EdgeInsets.fromLTRB(7, 0, 0, 0),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
-                            child: Stack(
-                              children: [
-                                Blur(
-                                  blur: 15,
-                                  blurColor: Colors.grey,
-                                  colorOpacity: 0.2,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(15)),
-                                        image: DecorationImage(
-                                            image:
-                                                AssetImage("images/limao.webp"),
-                                            fit: BoxFit.cover)),
-                                  ),
-                                ),
-                                Column(
-                                  children: [
-                                    Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Container(
-                                        margin:
-                                            EdgeInsets.fromLTRB(15, 18, 0, 5),
-                                        child: Text(
-                                          '我的收藏',
-                                          style: TextStyle(
-                                              fontSize: 15.5,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white70,
-                                              decoration: TextDecoration.none),
-                                        ),
-                                      ),
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.push(
+                                mainContext,
+                                MaterialPageRoute(
+                                    builder: (context) => wode_shoucang()));
+                          },
+                          child: Container(
+                            margin: EdgeInsets.fromLTRB(7, 0, 0, 0),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(15),
+                              child: Stack(
+                                children: [
+                                  Blur(
+                                    blur: 15,
+                                    blurColor: Colors.grey,
+                                    colorOpacity: 0.2,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15)),
+                                          image: DecorationImage(
+                                              image: AssetImage(
+                                                  "images/limao.webp"),
+                                              fit: BoxFit.cover)),
                                     ),
-                                    Align(
-                                      alignment: Alignment.topLeft,
-                                      child: Container(
-                                        margin:
-                                            EdgeInsets.fromLTRB(16, 10, 0, 0),
-                                        child: Text(
-                                          '0条珍藏',
-                                          style: TextStyle(
-                                              fontSize: 15.1,
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.white54,
-                                              decoration: TextDecoration.none),
+                                  ),
+                                  Column(
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Container(
+                                          margin:
+                                              EdgeInsets.fromLTRB(15, 18, 0, 5),
+                                          child: Text(
+                                            '我的收藏',
+                                            style: TextStyle(
+                                                fontSize: 15.5,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white70,
+                                                decoration:
+                                                    TextDecoration.none),
+                                          ),
                                         ),
                                       ),
-                                    )
-                                  ],
-                                )
-                              ],
+                                      Align(
+                                        alignment: Alignment.topLeft,
+                                        child: Container(
+                                            margin: EdgeInsets.fromLTRB(
+                                                16, 10, 0, 0),
+                                            child: FutureBuilder(
+                                              future: _run_chushihua1,
+                                              builder: (BuildContext context,
+                                                  AsyncSnapshot<dynamic>
+                                                      snapshot) {
+                                                if (snapshot.hasData) {
+                                                  var i = snapshot.data;
+                                                  return Text(
+                                                    '$i条珍藏',
+                                                    style: TextStyle(
+                                                        fontSize: 15.1,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color: Colors.white54,
+                                                        decoration:
+                                                            TextDecoration
+                                                                .none),
+                                                  );
+                                                } else if (snapshot.hasError) {
+                                                  return Text(
+                                                    '0条珍藏',
+                                                    style: TextStyle(
+                                                        fontSize: 15.1,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color: Colors.white54,
+                                                        decoration:
+                                                            TextDecoration
+                                                                .none),
+                                                  );
+                                                } else {
+                                                  return Container();
+                                                }
+                                              },
+                                            )),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         )),
