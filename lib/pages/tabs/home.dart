@@ -23,6 +23,7 @@ var yiyan_json_from_who = ' '; //一言的发布者
 var yiyan_json_from = ' '; //一言的来源
 var app_id = 'hgfhzqkwtkwhanoe'; //api接口的app_id
 var app_secret = 'WXNIbTdEY2g5MGNqRDVEVkxjSU4xdz09'; //api接口的app_secret
+var _sc_length = 0;
 late Future _run_chushihua; // 总工具数初始化函数中转
 late Future _run_chushihua1; //收藏数初始化函数中转
 Future getLocalJson(String jsonName) async {
@@ -40,15 +41,7 @@ Future _chushihua() async {
   return a;
 }
 
-//收藏数初始化函数
-Future _chushihua1() async {
-  // 初始化方法
-  SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-  var a = sharedPreferences.getString('shoucang');
-  var b = jsonDecode(a.toString());
-  var c = b.length;
-  return c;
-}
+
 
 class home_shouye extends StatelessWidget {
   @override
@@ -73,6 +66,18 @@ class shouye_home extends StatefulWidget {
 }
 
 class _shouye_homeState extends State<shouye_home> {
+  //收藏数初始化函数
+  Future _chushihua1() async {
+    // 初始化方法
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    var a = sharedPreferences.getString('shoucang');
+    var b = jsonDecode(a.toString());
+    var c = b.length;
+    setState(() {
+      _sc_length = c;
+    });
+    return c;
+  }
   @override
   //初始化生命周期
   void initState() {
@@ -125,7 +130,7 @@ class _shouye_homeState extends State<shouye_home> {
                             Navigator.push(
                                 mainContext,
                                 MaterialPageRoute(
-                                    builder: (context) => all_gongju()));
+                                    builder: (context) => all_gongju())).then((value) => _chushihua1());
                           },
                           child: Container(
                             margin: EdgeInsets.fromLTRB(0, 0, 7, 0),
@@ -368,9 +373,10 @@ class _shouye_homeState extends State<shouye_home> {
                         child: InkWell(
                           onTap: () {
                             Navigator.push(
-                                mainContext,
-                                MaterialPageRoute(
-                                    builder: (context) => wode_shoucang()));
+                                    mainContext,
+                                    MaterialPageRoute(
+                                        builder: (context) => wode_shoucang()))
+                                .then((value) => _chushihua1());
                           },
                           child: Container(
                             margin: EdgeInsets.fromLTRB(7, 0, 0, 0),
@@ -421,9 +427,8 @@ class _shouye_homeState extends State<shouye_home> {
                                                   AsyncSnapshot<dynamic>
                                                       snapshot) {
                                                 if (snapshot.hasData) {
-                                                  var i = snapshot.data;
                                                   return Text(
-                                                    '$i条珍藏',
+                                                    '$_sc_length条珍藏',
                                                     style: TextStyle(
                                                         fontSize: 15.1,
                                                         fontWeight:

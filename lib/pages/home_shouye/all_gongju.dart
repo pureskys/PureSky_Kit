@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:blur/blur.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,8 +7,11 @@ import 'package:puresky_kit/main.dart';
 import 'package:puresky_kit/pages/home_shouye/lishishangdejintian.dart';
 import 'package:puresky_kit/pages/home_shouye/suijiyinyuetuijian.dart';
 import 'package:puresky_kit/pages/home_shouye/xingchendahai.dart';
+import 'package:puresky_kit/pages/tools/bilibiligongju.dart';
 import 'package:puresky_kit/pages/tools/vip_yingshi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../tools/douyinggongju.dart';
 
 class all_gongju extends StatefulWidget {
   const all_gongju({super.key});
@@ -46,6 +48,10 @@ class _all_gongjuState extends State<all_gongju> {
         return lishishangdejintian();
       case '我的blog':
         return xingchendahai();
+      case '抖音工具':
+        return douyinggongju();
+      case '哔哩哔哩工具':
+        return bilibiligongju();
       default: // 路由失败返回方法
         return className;
     }
