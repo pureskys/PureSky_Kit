@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:puresky_kit/pages/tabs/home.dart';
 
 class douyinggongju extends StatefulWidget {
   const douyinggongju({super.key});
@@ -123,6 +122,7 @@ class _douyinggongjuState extends State<douyinggongju> {
                             var url = await _zhengze_txt(_txt_content);
                             var encodeBase64_url = await encodeBase64(url[0]);
                             var a = await _net_douying(encodeBase64_url);
+                            print(a);
                           },
                           child:
                               Text(style: TextStyle(fontSize: 17), '获取无水印链接')),

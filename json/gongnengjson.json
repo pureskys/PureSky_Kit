@@ -8,6 +8,11 @@
         "method": "哔哩哔哩工具"
       },
       {
+        "name": "抖音工具",
+        "isCollect": false,
+        "method": "抖音工具"
+      },
+      {
         "name": "VIP视频解析",
         "isCollect": false,
         "method": "VIP视频解析"
@@ -26,11 +31,6 @@
         "name": "我的blog",
         "isCollect": false,
         "method": "我的blog"
-      },
-      {
-        "name": "抖音工具",
-        "isCollect": false,
-        "method": "抖音工具"
       }
     ]
   },
@@ -48,6 +48,11 @@
     "Tag": "视频工具",
     "Feature": [
       {
+        "name": "哔哩哔哩工具",
+        "isCollect": false,
+        "method": "哔哩哔哩工具"
+      },
+      {
         "name": "抖音工具",
         "isCollect": false,
         "method": "抖音工具"
@@ -56,10 +61,6 @@
         "name": "VIP视频解析",
         "isCollect": false,
         "method": "VIP视频解析"
-      },{
-        "name": "哔哩哔哩工具",
-        "isCollect": false,
-        "method": "哔哩哔哩工具"
       }
     ]
   }

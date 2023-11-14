@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:blur/blur.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -140,15 +141,14 @@ class _all_gongjuState extends State<all_gongju> {
                           var Feature; //子json大类的json
                           var Tag; // 大类工具名
                           var name; // 单个工具名称的名字
-                          var isCollect; // 是否收藏的关键变量
-                          var method; // 工具名称的跳转函数名
+// 是否收藏的关键变量
+// 工具名称的跳转函数名
                           for (var i in json) {
                             gongneng_widget1 = [];
                             Tag = i['Tag'];
                             Feature = i['Feature'];
                             for (var j in Feature) {
                               name = j['name'];
-                              isCollect = j['isCollect'];
                               var method0 = j['method'];
                               var method = _getPageInstance(method0);
                               gongneng_widget1.add(gongju_zujuan(
@@ -221,8 +221,7 @@ class _gongju_zujuanState extends State<gongju_zujuan> {
                       },
                       onLongPress: () {
                         // 长按弹出按钮
-                        final RenderBox overlay = Overlay.of(context)!
-                            .context
+                        final RenderBox overlay = Overlay.of(context).context
                             .findRenderObject() as RenderBox;
                         final Offset position =
                             overlay.globalToLocal(Offset.zero);

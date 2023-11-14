@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class bilibiligongju extends StatefulWidget {
   const bilibiligongju({super.key});
@@ -17,7 +18,9 @@ class _bilibiligongjuState extends State<bilibiligongju> {
   var _jiexi_url = 'https://www.mxnzp.com/api/bilibili/video?'; // 解析接口
   var app_id = 'hgfhzqkwtkwhanoe'; //api接口的app_id
   var app_secret = 'WXNIbTdEY2g5MGNqRDVEVkxjSU4xdz09'; //api接口的app_secret
-
+  var _code = '等待中'; // 请求的状态信息
+  var old_encodeBase64_url; // 旧的视频链接base64编码
+  var respond; // 获取的网络返回数据
 //  链接正则提取
   Future _zhengze_txt(var fenxiang_douying) async {
     RegExp regExp = RegExp(
@@ -41,20 +44,52 @@ class _bilibiligongjuState extends State<bilibiligongju> {
 
 //  解析抖音链接数据
   Future _net_bilibili(var encodeBase64_url) async {
-    Dio dio = Dio();
-    var url = _jiexi_url +
-        "url=" +
-        encodeBase64_url +
-        "&app_id=" +
-        app_id +
-        "&app_secret=" +
-        app_secret;
-    print("访问的url$url");
-    Response response = await dio.get(url);
-    if (response.statusCode == 200) {
-      return response;
+    if (encodeBase64_url == old_encodeBase64_url) {
+      var _old_json_decode = jsonDecode(respond.toString());
+      var msg = _old_json_decode["msg"];
+      if (msg != "数据返回成功！") {
+        old_encodeBase64_url = encodeBase64_url;
+        Dio dio = Dio();
+        var url = _jiexi_url +
+            "url=" +
+            encodeBase64_url +
+            "&app_id=" +
+            app_id +
+            "&app_secret=" +
+            app_secret;
+        print("访问的url$url");
+        Response response = await dio.get(url);
+        if (response.statusCode == 200) {
+          return response;
+        } else {
+          setState(() {
+            _code = "解析接口可能失效，请联系开发者进行修复";
+          });
+          print('哔哩哔哩工具请求失败');
+        }
+      } else {
+        return respond;
+      }
     } else {
-      print('哔哩哔哩工具请求失败');
+      old_encodeBase64_url = encodeBase64_url;
+      Dio dio = Dio();
+      var url = _jiexi_url +
+          "url=" +
+          encodeBase64_url +
+          "&app_id=" +
+          app_id +
+          "&app_secret=" +
+          app_secret;
+      print("访问的url$url");
+      Response response = await dio.get(url);
+      if (response.statusCode == 200) {
+        return response;
+      } else {
+        setState(() {
+          _code = "解析接口可能失效，请联系开发者进行修复";
+        });
+        print('哔哩哔哩工具请求失败');
+      }
     }
   }
 
@@ -119,6 +154,10 @@ class _bilibiligongjuState extends State<bilibiligongju> {
                 child: Column(
                   children: [
                     Container(
+                        height: 20,
+                        margin: EdgeInsets.fromLTRB(0, 0, 0, 8),
+                        child: Text('$_code')),
+                    Container(
                       margin: EdgeInsets.fromLTRB(20, 10, 20, 8),
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
@@ -127,8 +166,25 @@ class _bilibiligongjuState extends State<bilibiligongju> {
                             _txt_content = _textEditingController.text;
                             var url = await _zhengze_txt(_txt_content);
                             var encodeBase64_url = await encodeBase64(url[0]);
-                            var a = await _net_bilibili(encodeBase64_url);
-                            print('返回的数据$a');
+                            // 这里开始把base64编码的链接传给了网络访问函数
+                            respond = await _net_bilibili(encodeBase64_url);
+                            var respond1 = jsonDecode(respond.toString());
+                            var msg = respond1['msg'];
+                            if (msg == "数据返回成功！") {
+                              setState(() {
+                                _code = "无水印视频链接复制成功";
+                              });
+                              var data = respond1["data"];
+                              var list = data["list"][0];
+                              var url = list["url"];
+                              Clipboard.setData(ClipboardData(text: url));
+                              print('成功msg:$msg和url：$url');
+                            } else {
+                              setState(() {
+                                _code = "无水印链接获取失败，请重试";
+                              });
+                              print('解析失败：$msg');
+                            }
                           },
                           child:
                               Text(style: TextStyle(fontSize: 17), '获取无水印链接')),
@@ -138,18 +194,31 @@ class _bilibiligongjuState extends State<bilibiligongju> {
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                               minimumSize: Size(double.infinity, 50)),
-                          onPressed: () {},
+                          onPressed: () async {
+                            _txt_content = _textEditingController.text;
+                            var url = await _zhengze_txt(_txt_content);
+                            var encodeBase64_url = await encodeBase64(url[0]);
+                            // 这里开始把base64编码的链接传给了网络访问函数
+                            respond = await _net_bilibili(encodeBase64_url);
+                            var respond1 = jsonDecode(respond.toString());
+                            var msg = respond1['msg'];
+                            if (msg == "数据返回成功！") {
+                              setState(() {
+                                _code = "封面链接复制成功";
+                              });
+                              var data = respond1["data"];
+                              var cover = data["cover"];
+                              Clipboard.setData(ClipboardData(text: cover));
+                              print('成功msg:$msg和cover：$cover');
+                            } else {
+                              setState(() {
+                                _code = "封面获取失败，请重试";
+                              });
+                              print('解析失败：$msg');
+                            }
+                          },
                           child: Text(style: TextStyle(fontSize: 17), '获取封面')),
-                    ),
-                    Container(
-                      margin: EdgeInsets.fromLTRB(20, 10, 20, 5),
-                      child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              minimumSize: Size(double.infinity, 50)),
-                          onPressed: () {},
-                          child:
-                              Text(style: TextStyle(fontSize: 17), '获取动态封面')),
-                    ),
+                    )
                   ],
                 ),
               )

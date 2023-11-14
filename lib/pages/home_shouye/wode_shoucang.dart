@@ -7,6 +7,8 @@ import 'package:puresky_kit/pages/home_shouye/xingchendahai.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../main.dart';
+import '../tools/bilibiligongju.dart';
+import '../tools/douyinggongju.dart';
 import '../tools/vip_yingshi.dart';
 import 'lishishangdejintian.dart';
 
@@ -20,7 +22,6 @@ class wode_shoucang extends StatefulWidget {
 }
 
 class _wode_shoucangState extends State<wode_shoucang> {
-  @override
   var _appbartile = "我的收藏";
   late Future _run_chushihua; // 初始化函数中转
 
@@ -35,6 +36,10 @@ class _wode_shoucangState extends State<wode_shoucang> {
         return lishishangdejintian();
       case '我的blog':
         return xingchendahai();
+      case '抖音工具':
+        return douyinggongju();
+      case '哔哩哔哩工具':
+        return bilibiligongju();
       default: // 路由失败返回方法
         return className;
     }
@@ -196,8 +201,7 @@ class _gongju_zujuanState extends State<gongju_zujuan> {
                     },
                     onLongPress: () {
                       // 长按弹出按钮
-                      final RenderBox overlay = Overlay.of(context)!
-                          .context
+                      final RenderBox overlay = Overlay.of(context).context
                           .findRenderObject() as RenderBox;
                       final Offset position =
                           overlay.globalToLocal(Offset.zero);
