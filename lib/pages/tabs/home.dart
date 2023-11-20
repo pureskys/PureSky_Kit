@@ -21,11 +21,20 @@ var yiyan_json; //一言获取的new_json
 var yiyan_json_hitokoto = ' '; //一言的文本
 var yiyan_json_from_who = ' '; //一言的发布者
 var yiyan_json_from = ' '; //一言的来源
-var app_id = 'hgfhzqkwtkwhanoe'; //api接口的app_id
-var app_secret = 'WXNIbTdEY2g5MGNqRDVEVkxjSU4xdz09'; //api接口的app_secret
+var app_id; //api接口的app_id
+var app_secret; //api接口的app_secret
 var _sc_length = 0;
 late Future _run_chushihua; // 总工具数初始化函数中转
 late Future _run_chushihua1; //收藏数初始化函数中转
+//获取api的密匙
+Future getApiKey() async {
+  var name = 'apikey';
+  var apijson = await getLocalJson(name);
+  app_id = apijson[0]['app_id'];
+  app_secret = apijson[0]['app_secret'];
+  print("api数据的app_id：$app_id和app_secret：$app_secret");
+}
+
 Future getLocalJson(String jsonName) async {
   // 本地json读取方法
   var json =
@@ -40,8 +49,6 @@ Future _chushihua() async {
   print("获取的全部功能json数据：$a");
   return a;
 }
-
-
 
 class home_shouye extends StatelessWidget {
   @override
@@ -68,20 +75,27 @@ class shouye_home extends StatefulWidget {
 class _shouye_homeState extends State<shouye_home> {
   //收藏数初始化函数
   Future _chushihua1() async {
-    // 初始化方法
-    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-    var a = sharedPreferences.getString('shoucang');
-    var b = jsonDecode(a.toString());
-    var c = b.length;
-    setState(() {
-      _sc_length = c;
-    });
-    return c;
+    try {
+      // 初始化方法
+      SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+      var a = sharedPreferences.getString('shoucang');
+      var b = jsonDecode(a.toString());
+      var c = b.length;
+      setState(() {
+        _sc_length = c;
+      });
+      return c;
+    } catch (e) {
+      print("还没有收藏的功能");
+    }
   }
+
   @override
   //初始化生命周期
   void initState() {
     // TODO: implement initState
+    getApiKey();
     _run_chushihua = _chushihua();
     _run_chushihua1 = _chushihua1();
     super.initState();
@@ -128,9 +142,10 @@ class _shouye_homeState extends State<shouye_home> {
                           onTap: () {
                             //全部工具的点击跳转
                             Navigator.push(
-                                mainContext,
-                                MaterialPageRoute(
-                                    builder: (context) => all_gongju())).then((value) => _chushihua1());
+                                    mainContext,
+                                    MaterialPageRoute(
+                                        builder: (context) => all_gongju()))
+                                .then((value) => _chushihua1());
                           },
                           child: Container(
                             margin: EdgeInsets.fromLTRB(0, 0, 7, 0),

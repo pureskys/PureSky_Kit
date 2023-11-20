@@ -21,9 +21,18 @@ class _lishishangdejintianState extends State<lishishangdejintian> {
   var day; //解析时间对象的日
   var history_today_json; //存放缓存中的数据和直接网络获取的数据
   var json_month; //缓存中的日期
+  var app_id; //api接口的app_id
+  var app_secret; //api接口的app_secret
   var json_day; //缓存中的日期
   List<Widget> history_widget = [];
-
+//获取api的密匙
+  Future getApiKey() async {
+    var name = 'apikey';
+    var apijson = await getLocalJson(name);
+    app_id = apijson[0]['app_id'];
+    app_secret = apijson[0]['app_secret'];
+    print("api数据的app_id：$app_id和app_secret：$app_secret");
+  }
   //history_today的判断是否请求网络
   Future _iscunzai_history_today() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -103,6 +112,7 @@ class _lishishangdejintianState extends State<lishishangdejintian> {
 
   @override
   void initState() {
+    getApiKey(); // 获取密匙
     datetime = DateTime.now(); //获取今日时间对象
     year = datetime.year; //获取年
     month = datetime.month; //解析今日月份

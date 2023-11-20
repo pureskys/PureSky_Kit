@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../tabs/home.dart';
+
 class bilibiligongju extends StatefulWidget {
   const bilibiligongju({super.key});
 
@@ -16,11 +18,21 @@ class _bilibiligongjuState extends State<bilibiligongju> {
       TextEditingController(); //创建的文本框接收器
   var _txt_content; // 文本的文本
   var _jiexi_url = 'https://www.mxnzp.com/api/bilibili/video?'; // 解析接口
-  var app_id = 'hgfhzqkwtkwhanoe'; //api接口的app_id
-  var app_secret = 'WXNIbTdEY2g5MGNqRDVEVkxjSU4xdz09'; //api接口的app_secret
+  var app_id; //api接口的app_id
+  var app_secret; //api接口的app_secret
   var _code = '等待中'; // 请求的状态信息
   var old_encodeBase64_url; // 旧的视频链接base64编码
   var respond; // 获取的网络返回数据
+
+  //获取api的密匙
+  Future getApiKey() async {
+    var name = 'apikey';
+    var apijson = await getLocalJson(name);
+    app_id = apijson[0]['app_id'];
+    app_secret = apijson[0]['app_secret'];
+    print("api数据的app_id：$app_id和app_secret：$app_secret");
+  }
+
 //  链接正则提取
   Future _zhengze_txt(var fenxiang_douying) async {
     RegExp regExp = RegExp(
@@ -91,6 +103,13 @@ class _bilibiligongjuState extends State<bilibiligongju> {
         print('哔哩哔哩工具请求失败');
       }
     }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    getApiKey();
+    super.initState();
   }
 
   @override
