@@ -18,6 +18,10 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'PureSky_Kit',
       theme: ThemeData(
+        primaryColor: Colors.white,
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: Colors.white,
+            surfaceTint: Colors.transparent),
         appBarTheme: AppBarTheme(
             backgroundColor: Colors.white,
             elevation: 0.0,
@@ -73,6 +77,8 @@ class _tabsState extends State<tabs> {
       //底部导航栏开始
 
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Colors.blue,
+        backgroundColor: Colors.white,
         currentIndex: _tab_index,
         onTap: (index) {
           setState(() {

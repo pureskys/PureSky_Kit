@@ -54,13 +54,19 @@ class _aaaState extends State<vip_yingshi> {
             children: [
               Container(
                 margin: EdgeInsets.fromLTRB(10,20,10,10),
-                decoration: BoxDecoration(
-                  border: new Border.all(color: Colors.blue, width: 2),
-                ),
                 child: TextField(
                   decoration: InputDecoration(
-                    labelText: "   请粘贴视频链接",
+                    labelText: "   视频链接:",
                     hintText: "    请粘贴视频链接",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide:
+                          BorderSide(color: Colors.blueGrey, width: 1.7)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide:
+                          BorderSide(color: Colors.blueAccent, width: 2))
                   ),
                 ),
               )

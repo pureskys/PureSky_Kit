@@ -75,6 +75,17 @@ class _all_gongjuState extends State<all_gongju> {
 
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+          primaryColor: Colors.white,
+          colorScheme: ColorScheme.fromSeed(
+              seedColor: Colors.white, surfaceTint: Colors.transparent),
+          appBarTheme: AppBarTheme(color: Colors.white),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                  minimumSize: Size(double.infinity, 50),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  backgroundColor: Colors.blue))),
       home: Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.white,
@@ -221,7 +232,8 @@ class _gongju_zujuanState extends State<gongju_zujuan> {
                       },
                       onLongPress: () {
                         // 长按弹出按钮
-                        final RenderBox overlay = Overlay.of(context).context
+                        final RenderBox overlay = Overlay.of(context)
+                            .context
                             .findRenderObject() as RenderBox;
                         final Offset position =
                             overlay.globalToLocal(Offset.zero);
@@ -271,7 +283,6 @@ class _gongju_zujuanState extends State<gongju_zujuan> {
                                       print('收藏缓存为 $_scJson');
                                     } else {
                                       print('该项已经存在于收藏列表中');
-
                                     }
                                   }
                                 } catch (e) {
@@ -287,7 +298,7 @@ class _gongju_zujuanState extends State<gongju_zujuan> {
                         child: Stack(
                           children: [
                             Blur(
-                                blur: 10,
+                                blur: 1,
                                 blurColor: Colors.white,
                                 colorOpacity: 0.2,
                                 child: Container(

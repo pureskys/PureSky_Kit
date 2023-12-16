@@ -158,15 +158,21 @@ class _bilibiligongjuState extends State<bilibiligongju> {
             children: [
               Container(
                 margin: EdgeInsets.fromLTRB(15, 50, 15, 30),
-                decoration: BoxDecoration(
-                  border: new Border.all(color: Colors.blue, width: 2),
-                ),
                 child: TextField(
+                  style: TextStyle(),
                   controller: _textEditingController,
                   decoration: InputDecoration(
-                    labelText: "    链接：",
-                    hintText: "    请粘贴哔哩哔哩链接",
-                  ),
+                      labelText: "    链接：",
+                      hintText: "    请粘贴哔哩哔哩链接",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.blueGrey, width: 1.5)),
+                      focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.blueAccent, width: 2))),
                 ),
               ),
               Container(
@@ -180,7 +186,11 @@ class _bilibiligongjuState extends State<bilibiligongju> {
                       margin: EdgeInsets.fromLTRB(20, 10, 20, 8),
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              minimumSize: Size(double.infinity, 50)),
+                              minimumSize: Size(double.infinity, 50),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
+                              backgroundColor: Colors.blue),
                           onPressed: () async {
                             _txt_content = _textEditingController.text;
                             var url = await _zhengze_txt(_txt_content);
@@ -205,14 +215,22 @@ class _bilibiligongjuState extends State<bilibiligongju> {
                               print('解析失败：$msg');
                             }
                           },
-                          child:
-                              Text(style: TextStyle(fontSize: 17), '获取无水印链接')),
+                          child: Text(
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
+                              '获取无水印链接')),
                     ),
                     Container(
                       margin: EdgeInsets.fromLTRB(20, 10, 20, 8),
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              minimumSize: Size(double.infinity, 50)),
+                              minimumSize: Size(double.infinity, 50),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10))),
+                              backgroundColor: Colors.blue),
                           onPressed: () async {
                             _txt_content = _textEditingController.text;
                             var url = await _zhengze_txt(_txt_content);
@@ -236,7 +254,12 @@ class _bilibiligongjuState extends State<bilibiligongju> {
                               print('解析失败：$msg');
                             }
                           },
-                          child: Text(style: TextStyle(fontSize: 17), '获取封面')),
+                          child: Text(
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
+                              '获取封面')),
                     )
                   ],
                 ),
