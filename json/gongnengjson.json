@@ -31,6 +31,11 @@
         "name": "我的blog",
         "isCollect": false,
         "method": "我的blog"
+      },
+      {
+        "name": "汉语字典",
+        "isCollect": false,
+        "method": "汉语字典"
       }
     ]
   },
@@ -41,6 +46,11 @@
         "name": "历史上的今天",
         "isCollect": false,
         "method": "历史上的今天"
+      },
+      {
+        "name": "汉语字典",
+        "isCollect": false,
+        "method": "汉语字典"
       }
     ]
   },

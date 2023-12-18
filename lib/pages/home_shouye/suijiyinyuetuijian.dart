@@ -340,7 +340,7 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-      body: WillPopScope(
+      body: PopScope(
           child: FutureBuilder(
             future: _netmusic,
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -617,10 +617,11 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
               }
             },
           ),
-          onWillPop: () async {
+          canPop: false,
+          onPopInvoked: (bool didPop) async {
             // 拦截返回操作（暂停音乐后再退出）
             audioPlayer.stop();
-            return true;
+            Navigator.pop(context);
           }),
     );
   }

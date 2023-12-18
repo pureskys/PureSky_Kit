@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../main.dart';
 import '../tools/bilibiligongju.dart';
 import '../tools/douyinggongju.dart';
+import '../tools/hanyuzidian.dart';
 import '../tools/vip_yingshi.dart';
 import 'lishishangdejintian.dart';
 
@@ -40,6 +41,8 @@ class _wode_shoucangState extends State<wode_shoucang> {
         return douyinggongju();
       case '哔哩哔哩工具':
         return bilibiligongju();
+      case '汉语字典':
+        return hanyuzidian();
       default: // 路由失败返回方法
         return className;
     }
@@ -62,12 +65,14 @@ class _wode_shoucangState extends State<wode_shoucang> {
       return [];
     }
   }
+
 //删除组件
-  void _remove_wiget(name){
+  void _remove_wiget(name) {
     setState(() {
       _sc_json_all.remove(name);
     });
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -136,8 +141,11 @@ class _wode_shoucangState extends State<wode_shoucang> {
                   var name = i;
                   var method0 = i;
                   var method = _getPageInstance(method0); // 注册路由
-                  gongneng_widget1.add(
-                      gongju_zujuan(name: "$name", method: method,fangfa: _remove_wiget,)); // 添加小名字模块
+                  gongneng_widget1.add(gongju_zujuan(
+                    name: "$name",
+                    method: method,
+                    fangfa: _remove_wiget,
+                  )); // 添加小名字模块
                 }
                 return Container(
                   margin: EdgeInsets.fromLTRB(18, 10, 18, 10),
@@ -172,7 +180,9 @@ class gongju_zujuan extends StatefulWidget {
   final name; //功能的名字
   final method; // 功能的跳转方法
   final fangfa;
-  const gongju_zujuan({super.key, required this.name, required this.method, this.fangfa});
+
+  const gongju_zujuan(
+      {super.key, required this.name, required this.method, this.fangfa});
 
   @override
   State<gongju_zujuan> createState() => _gongju_zujuanState();
@@ -180,7 +190,6 @@ class gongju_zujuan extends StatefulWidget {
 
 class _gongju_zujuanState extends State<gongju_zujuan> {
   @override
-
   Widget build(BuildContext context) {
     return Container(
         child: Center(
@@ -201,7 +210,8 @@ class _gongju_zujuanState extends State<gongju_zujuan> {
                     },
                     onLongPress: () {
                       // 长按弹出按钮
-                      final RenderBox overlay = Overlay.of(context).context
+                      final RenderBox overlay = Overlay.of(context)
+                          .context
                           .findRenderObject() as RenderBox;
                       final Offset position =
                           overlay.globalToLocal(Offset.zero);
@@ -245,7 +255,7 @@ class _gongju_zujuanState extends State<gongju_zujuan> {
                       child: Stack(
                         children: [
                           Blur(
-                              blur: 10,
+                              blur: 1,
                               blurColor: Colors.white,
                               colorOpacity: 0.2,
                               child: Container(

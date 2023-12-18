@@ -39,7 +39,7 @@ dependencies:
 #  毛玻璃效果包
   blur: ^3.1.0
 #  内置浏览器插件
-  webview_flutter: ^4.2.2
+  webview_flutter: ^4.4.2
 #  音频播放插件
   audioplayers: ^4.1.0
 #  网络图片加载异常处理插件

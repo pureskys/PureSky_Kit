@@ -259,10 +259,10 @@ class _neirongkapianState extends State<neirongkapian> {
             borderRadius: BorderRadius.vertical(top: Radius.circular(0))),
         context: context,
         builder: (context) {
-          return WillPopScope(
-            onWillPop: () async {
+          return PopScope(
+            canPop: true,
+            onPopInvoked: (bool didPop) async {
               widget.onpressed("历史上的今天");
-              return true;
             },
             child: Container(
               height: MediaQuery.of(context).size.height,

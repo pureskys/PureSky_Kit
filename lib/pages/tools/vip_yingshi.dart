@@ -69,7 +69,8 @@ class _aaaState extends State<vip_yingshi> {
                           BorderSide(color: Colors.blueAccent, width: 2))
                   ),
                 ),
-              )
+              ),
+              Text('由于一些敏感性问题此功能未上线')
             ],
           ),
         ),

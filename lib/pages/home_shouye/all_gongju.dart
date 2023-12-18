@@ -9,6 +9,7 @@ import 'package:puresky_kit/pages/home_shouye/lishishangdejintian.dart';
 import 'package:puresky_kit/pages/home_shouye/suijiyinyuetuijian.dart';
 import 'package:puresky_kit/pages/home_shouye/xingchendahai.dart';
 import 'package:puresky_kit/pages/tools/bilibiligongju.dart';
+import 'package:puresky_kit/pages/tools/hanyuzidian.dart';
 import 'package:puresky_kit/pages/tools/vip_yingshi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -53,6 +54,8 @@ class _all_gongjuState extends State<all_gongju> {
         return douyinggongju();
       case '哔哩哔哩工具':
         return bilibiligongju();
+      case '汉语字典':
+        return hanyuzidian();
       default: // 路由失败返回方法
         return className;
     }
