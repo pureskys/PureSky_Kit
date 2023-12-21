@@ -36,6 +36,11 @@
         "name": "汉语字典",
         "isCollect": false,
         "method": "汉语字典"
+      },
+      {
+        "name": "随机诗词",
+        "isCollect": false,
+        "method": "随机诗词"
       }
     ]
   },
@@ -51,6 +56,11 @@
         "name": "汉语字典",
         "isCollect": false,
         "method": "汉语字典"
+      },
+      {
+        "name": "随机诗词",
+        "isCollect": false,
+        "method": "随机诗词"
       }
     ]
   },

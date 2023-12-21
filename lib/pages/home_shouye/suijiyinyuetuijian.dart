@@ -619,9 +619,15 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
           ),
           canPop: false,
           onPopInvoked: (bool didPop) async {
-            // 拦截返回操作（暂停音乐后再退出）
-            audioPlayer.stop();
-            Navigator.pop(context);
+            if(didPop){
+              return;
+            }else{
+              // 拦截返回操作（暂停音乐后再退出）
+              print('音乐推荐返回操作');
+              audioPlayer.dispose();
+              Navigator.pop(context);
+            }
+
           }),
     );
   }

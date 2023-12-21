@@ -11,6 +11,7 @@ import '../tools/bilibiligongju.dart';
 import '../tools/douyinggongju.dart';
 import '../tools/hanyuzidian.dart';
 import '../tools/vip_yingshi.dart';
+import '../tools/suijishici.dart';
 import 'lishishangdejintian.dart';
 
 var _sc_json_all; //储存收藏的数据
@@ -43,6 +44,8 @@ class _wode_shoucangState extends State<wode_shoucang> {
         return bilibiligongju();
       case '汉语字典':
         return hanyuzidian();
+      case '随机诗词':
+        return suijishici();
       default: // 路由失败返回方法
         return className;
     }
