@@ -147,7 +147,7 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
         await _net();
         await Future.delayed(Duration(milliseconds: 1800)); //等待1.8秒
         setState(() {
-          _is_shuaxing_ing =false;
+          _is_shuaxing_ing = false;
           var json = jsonDecode(_netjson.toString())['data'];
           name = json['name'];
           auther = json['auther'];
@@ -238,13 +238,13 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
         print("获取的网络数据$_netjson");
         print("获取的缓存数据$yinyuehuancun");
         setState(() {
-          _is_shuaxing_ing =false;
+          _is_shuaxing_ing = false;
         });
       }
     } catch (e) {
       debugPrint('获取网易云音乐数据失败$e');
       setState(() {
-        _is_shuaxing_ing =false;
+        _is_shuaxing_ing = false;
       });
     }
   }
@@ -408,283 +408,350 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
                 _content = json['content'];
                 comment_name = json['comment_name'];
                 _huoquxinxi(mp3url);
-                return Scrollbar(
-                  child: Stack(
-                    children: [
-                      Blur(
-                          blur: 12,
-                          blurColor: Colors.transparent,
-                          colorOpacity: 0.2,
-                          child: Container(
-                            height: double.infinity,
-                            child: CachedNetworkImage(
-                                fit: BoxFit.cover,
-                                imageUrl: picUrl,
-                                httpHeaders: {
-                                  'User-Agent':
-                                      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36 Edg/117.0.2045.55'
-                                },
-                                placeholder: (context, url) => Image.asset(
-                                      _zhanweitupian,
-                                      fit: BoxFit.cover,
-                                    )),
-                          )),
-                      Column(
+                return Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Blur(
+                        blur: 12,
+                        blurColor: Colors.transparent,
+                        colorOpacity: 0.2,
+                        child: Container(
+                          height: double.infinity,
+                          child: CachedNetworkImage(
+                              fit: BoxFit.cover,
+                              imageUrl: picUrl,
+                              httpHeaders: {
+                                'User-Agent':
+                                    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36 Edg/117.0.2045.55'
+                              },
+                              placeholder: (context, url) => Image.asset(
+                                    _zhanweitupian,
+                                    fit: BoxFit.cover,
+                                  )),
+                        )),
+                    Center(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
-                            margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
-                            child: Column(
-                              children: [
-                                Container(
-                                  child: Text(
-                                    '$name',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        color: Colors.white54,
-                                        fontSize: 32,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                Container(
-                                  child: Text(
-                                    "$auther",
-                                    style: TextStyle(
-                                        fontSize: 16, color: Colors.white60),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          //大图片
-                          Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15)),
-                                child: Blur(
-                                  borderRadius: BorderRadius.circular(15),
-                                  blur: 0.5,
-                                  blurColor: Colors.grey,
-                                  colorOpacity: 0.2,
-                                  child: Container(
-                                    height: 300,
-                                    width: 310,
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(15),
-                                      child: CachedNetworkImage(
-                                          matchTextDirection: true,
-                                          fit: BoxFit.cover,
-                                          imageUrl: picUrl,
-                                          httpHeaders: {
-                                            'User-Agent':
-                                                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36 Edg/117.0.2045.55'
-                                          },
-                                          placeholder: (context, url) =>
-                                              Image.asset(
-                                                _zhanweitupian,
-                                                fit: BoxFit.cover,
-                                                matchTextDirection: true,
-                                              )),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              _is_shuaxing_ing
-                                  ? Container(
-                                      child: CircularProgressIndicator(),
-                                    )
-                                  : Container()
-                            ],
-                          ),
-                          //评论
-                          Container(
-                              margin: EdgeInsets.fromLTRB(12, 10, 12, 0),
-                              child: Text(
-                                "$_content",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white54,
-                                ),
-                              )),
-                          Container(
-                            width: double.infinity,
-                            margin: EdgeInsets.fromLTRB(0, 0, 18, 0),
-                            child: Stack(
-                              alignment: Alignment.centerRight,
-                              children: [
-                                Text(
-                                  '——$comment_name',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white54,
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-
-                          //进度条
-                          Container(
-                            margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Container(
-                                    width: 35,
-                                    child: Text(
-                                      "$_musicjindu_xianshi",
-                                      style: TextStyle(color: Colors.white54),
-                                    )),
-                                Expanded(
-                                  flex: 1,
-                                  child: Slider(
-                                      activeColor: Colors.blueGrey,
-                                      min: 0,
-                                      max: _maxtime + 900,
-                                      value: _musicjindu,
-                                      onChanged: (e) {
-                                        setState(() {
-                                          _musicjindu = e;
-                                          print("滑动值${e.toInt()}");
-                                          _seekTo(e);
-                                        });
-                                      }),
-                                ),
-                                Text(
-                                  "$_maxtime_xianshi",
-                                  style: TextStyle(color: Colors.white54),
-                                )
-                              ],
-                            ),
-                          ),
-                          //控制器的面板
-                          Container(
-                              //播放顺序控制（随机播放。单曲循环）
-                              child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                margin: EdgeInsets.fromLTRB(0, 18, 0, 0),
-                                height: 62,
-                                width: 62,
-                                child: IconButton(
-                                  onPressed: () {
-                                    _bofangshunxu = !_bofangshunxu;
-                                  },
-                                  icon: _bofangshunxu
-                                      ? Icon(
-                                          Icons.repeat_one,
-                                          size: 46,
-                                          color: Colors.white54,
-                                        )
-                                      : Icon(
-                                          Icons.shuffle,
-                                          size: 42,
-                                          color: Colors.white54,
-                                        ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 62,
-                                width: 62,
-                                child: IconButton(
-                                    onPressed: () {
-                                      try {
-                                        audioPlayer.stop();
-                                        audioPlayer.dispose();
-                                        audioPlayer = AudioPlayer();
-                                      } catch (e) {
-                                        print("上一首异常：摧毁对象失败");
-                                      }
-                                      _isfail = false;
-                                      _ispauseMusic = true;
-                                      _shangyishou(); //上一首
-                                    },
-                                    icon: Icon(
-                                      Icons.skip_previous_rounded,
-                                      size: 62,
-                                      color: Colors.white54,
-                                    )),
-                              ),
-                              Container(
-                                  padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                                  child: SizedBox(
-                                    height: 62,
-                                    width: 62,
-                                    child: Container(
-                                        child: IconButton(
-                                            onPressed: _anniucaozuo,
-                                            icon: _ispauseMusic
-                                                ? Icon(
-                                                    Icons.play_circle_rounded,
-                                                    size: 62,
+                          Expanded(
+                              flex: 1,
+                              child: ListView(
+                                children: [
+                                  SizedBox(height: MediaQuery.of(context).size.height/18,),
+                                  Container(
+                                      child: Center(
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              margin: EdgeInsets.fromLTRB(
+                                                  20, 20, 20, 20),
+                                              child: Column(
+                                                children: [
+                                                  Container(
+                                                    child: Text(
+                                                      '$name',
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                          color: Colors.white54,
+                                                          fontSize: 32,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    child: Text(
+                                                      "$auther",
+                                                      style: TextStyle(
+                                                          fontSize: 16,
+                                                          color:
+                                                              Colors.white60),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            //大图片
+                                            Stack(
+                                              alignment: Alignment.center,
+                                              children: [
+                                                Container(
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              15)),
+                                                  child: Blur(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            15),
+                                                    blur: 0.5,
+                                                    blurColor: Colors.grey,
+                                                    colorOpacity: 0.2,
+                                                    child: Container(
+                                                      height: 300,
+                                                      width: 310,
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(15),
+                                                        child:
+                                                            CachedNetworkImage(
+                                                                matchTextDirection:
+                                                                    true,
+                                                                fit: BoxFit
+                                                                    .cover,
+                                                                imageUrl:
+                                                                    picUrl,
+                                                                httpHeaders: {
+                                                                  'User-Agent':
+                                                                      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36 Edg/117.0.2045.55'
+                                                                },
+                                                                placeholder: (context,
+                                                                        url) =>
+                                                                    Image.asset(
+                                                                      _zhanweitupian,
+                                                                      fit: BoxFit
+                                                                          .cover,
+                                                                      matchTextDirection:
+                                                                          true,
+                                                                    )),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                _is_shuaxing_ing
+                                                    ? Container(
+                                                        child:
+                                                            CircularProgressIndicator(),
+                                                      )
+                                                    : Container()
+                                              ],
+                                            ),
+                                            //评论
+                                            Container(
+                                                margin: EdgeInsets.fromLTRB(
+                                                    12, 10, 12, 0),
+                                                child: Text(
+                                                  "$_content",
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                    fontSize: 16,
                                                     color: Colors.white54,
+                                                  ),
+                                                )),
+                                            Container(
+                                              width: double.infinity,
+                                              margin: EdgeInsets.fromLTRB(
+                                                  0, 0, 18, 0),
+                                              child: Stack(
+                                                alignment:
+                                                    Alignment.centerRight,
+                                                children: [
+                                                  Text(
+                                                    '——$comment_name',
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Colors.white54,
+                                                    ),
                                                   )
-                                                : Icon(
-                                                    Icons.pause,
-                                                    size: 62,
-                                                    color: Colors.white54,
-                                                  ))),
-                                  )),
-                              SizedBox(
-                                height: 62,
-                                width: 62,
-                                child: IconButton(
-                                    onPressed: () {
-                                      try {
-                                        audioPlayer.dispose();
-                                        audioPlayer = AudioPlayer();
-                                        _isfail = false;
-                                        _ispauseMusic = true;
-                                        setState(() {
-                                          _musicjindu_xianshi = "0:00";
-                                          _musicjindu = 0.0;
-                                          _isfirstplay = true;
-                                        });
-                                      } catch (e) {
-                                        print("下一首异常：摧毁对象失败");
-                                      }
-                                      _music_qiehuan();
-                                    },
-                                    icon: Icon(
-                                      Icons.skip_next_rounded,
-                                      size: 62,
-                                      color: Colors.white54,
-                                    )),
-                              ),
-                              Container(
-                                // 展开播放目录列表
-                                margin: EdgeInsets.fromLTRB(10, 17, 0, 0),
-                                height: 62,
-                                width: 62,
-                                child: IconButton(
-                                  onPressed: () {},
-                                  icon: Icon(
-                                    Icons.queue_music,
-                                    size: 46,
-                                    color: Colors.white54,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )),
-                          Container(
-                              //歌曲加载失败显示的页面
-                              margin: EdgeInsets.all(15),
-                              child: _isfail
-                                  ? Text(
-                                      "未找到歌曲信息:$_time_daojishi",
-                                      style: TextStyle(color: Colors.white54),
-                                    )
-                                  : Container())
+                                                ],
+                                              ),
+                                            ),
+
+                                            //进度条
+                                            Container(
+                                              margin: EdgeInsets.fromLTRB(
+                                                  10, 0, 10, 0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceAround,
+                                                children: [
+                                                  Container(
+                                                      width: 35,
+                                                      child: Text(
+                                                        "$_musicjindu_xianshi",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white54),
+                                                      )),
+                                                  Expanded(
+                                                    flex: 1,
+                                                    child: Slider(
+                                                        activeColor:
+                                                            Colors.blueGrey,
+                                                        min: 0,
+                                                        max: _maxtime + 900,
+                                                        value: _musicjindu,
+                                                        onChanged: (e) {
+                                                          setState(() {
+                                                            _musicjindu = e;
+                                                            print(
+                                                                "滑动值${e.toInt()}");
+                                                            _seekTo(e);
+                                                          });
+                                                        }),
+                                                  ),
+                                                  Text(
+                                                    "$_maxtime_xianshi",
+                                                    style: TextStyle(
+                                                        color: Colors.white54),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                            //控制器的面板
+                                            Container(
+                                                //播放顺序控制（随机播放。单曲循环）
+                                                child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Container(
+                                                  margin: EdgeInsets.fromLTRB(
+                                                      0, 18, 0, 0),
+                                                  height: 62,
+                                                  width: 62,
+                                                  child: IconButton(
+                                                    onPressed: () {
+                                                      _bofangshunxu =
+                                                          !_bofangshunxu;
+                                                    },
+                                                    icon: _bofangshunxu
+                                                        ? Icon(
+                                                            Icons.repeat_one,
+                                                            size: 46,
+                                                            color:
+                                                                Colors.white54,
+                                                          )
+                                                        : Icon(
+                                                            Icons.shuffle,
+                                                            size: 42,
+                                                            color:
+                                                                Colors.white54,
+                                                          ),
+                                                  ),
+                                                ),
+                                                SizedBox(
+                                                  height: 62,
+                                                  width: 62,
+                                                  child: IconButton(
+                                                      onPressed: () {
+                                                        try {
+                                                          audioPlayer.stop();
+                                                          audioPlayer.dispose();
+                                                          audioPlayer =
+                                                              AudioPlayer();
+                                                        } catch (e) {
+                                                          print("上一首异常：摧毁对象失败");
+                                                        }
+                                                        _isfail = false;
+                                                        _ispauseMusic = true;
+                                                        _shangyishou(); //上一首
+                                                      },
+                                                      icon: Icon(
+                                                        Icons
+                                                            .skip_previous_rounded,
+                                                        size: 62,
+                                                        color: Colors.white54,
+                                                      )),
+                                                ),
+                                                Container(
+                                                    padding:
+                                                        EdgeInsets.fromLTRB(
+                                                            20, 0, 20, 0),
+                                                    child: SizedBox(
+                                                      height: 62,
+                                                      width: 62,
+                                                      child: Container(
+                                                          child: IconButton(
+                                                              onPressed:
+                                                                  _anniucaozuo,
+                                                              icon:
+                                                                  _ispauseMusic
+                                                                      ? Icon(
+                                                                          Icons
+                                                                              .play_circle_rounded,
+                                                                          size:
+                                                                              62,
+                                                                          color:
+                                                                              Colors.white54,
+                                                                        )
+                                                                      : Icon(
+                                                                          Icons
+                                                                              .pause,
+                                                                          size:
+                                                                              62,
+                                                                          color:
+                                                                              Colors.white54,
+                                                                        ))),
+                                                    )),
+                                                SizedBox(
+                                                  height: 62,
+                                                  width: 62,
+                                                  child: IconButton(
+                                                      onPressed: () {
+                                                        try {
+                                                          audioPlayer.dispose();
+                                                          audioPlayer =
+                                                              AudioPlayer();
+                                                          _isfail = false;
+                                                          _ispauseMusic = true;
+                                                          setState(() {
+                                                            _musicjindu_xianshi =
+                                                                "0:00";
+                                                            _musicjindu = 0.0;
+                                                            _isfirstplay = true;
+                                                          });
+                                                        } catch (e) {
+                                                          print("下一首异常：摧毁对象失败");
+                                                        }
+                                                        _music_qiehuan();
+                                                      },
+                                                      icon: Icon(
+                                                        Icons.skip_next_rounded,
+                                                        size: 62,
+                                                        color: Colors.white54,
+                                                      )),
+                                                ),
+                                                Container(
+                                                  // 展开播放目录列表
+                                                  margin: EdgeInsets.fromLTRB(
+                                                      10, 17, 0, 0),
+                                                  height: 62,
+                                                  width: 62,
+                                                  child: IconButton(
+                                                    onPressed: () {},
+                                                    icon: Icon(
+                                                      Icons.queue_music,
+                                                      size: 46,
+                                                      color: Colors.white54,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            )),
+                                            Container(
+                                                //歌曲加载失败显示的页面
+                                                margin: EdgeInsets.all(15),
+                                                child: _isfail
+                                                    ? Text(
+                                                        "未找到歌曲信息:$_time_daojishi",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white54),
+                                                      )
+                                                    : Container())
+                                          ],
+                                        ),
+                                      ))
+                                ],
+                              ))
                         ],
-                      )
-                    ],
-                  ),
+                      ),
+                    )
+                  ],
                 );
               }
             },
