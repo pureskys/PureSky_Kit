@@ -23,13 +23,14 @@ class _xingchendahaiState extends State<xingchendahai> {
       onPageFinished: (String url) {
         Uri uri = Uri.parse(url);
         url1 = uri.origin + uri.path;
+        print('url1：$url1');
       },
       onWebResourceError: (WebResourceError error) {},
       onNavigationRequest: (NavigationRequest request) {
         return NavigationDecision.navigate;
       },
     ))
-    ..loadRequest(Uri.parse('https://chenyang-tnt.gitee.io/'));
+    ..loadRequest(Uri.parse('https://www.puresky.top/'));
 
 // ___________________________________________________
   @override
@@ -59,7 +60,7 @@ class _xingchendahaiState extends State<xingchendahai> {
               Navigator.pop(context);
             } else {
               if (await controller.canGoBack() &&
-                  url1 != "https://chenyang-tnt.gitee.io/") {
+                  url1 != "网页返回拦截") {
                 await controller.goBack();
                 return;
               } else {
