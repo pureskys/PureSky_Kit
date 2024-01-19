@@ -35,17 +35,17 @@
 
 ### 软件页面截图
 
-**首页：**
+#### **首页：**
 ![shoye.jpg](readme_images%2Fshoye.jpg)
-**全部工具页：**
+#### **全部工具页：**
 ![all_gongju.jpg](readme_images%2Fall_gongju.jpg)
-**播放页面页：**
+#### **播放页面页：**
 ![bofangye.jpg](readme_images%2Fbofangye.jpg)
-**历史上的今天页：**
+#### **历史上的今天页：**
 ![lishishangdejintian.jpg](readme_images%2Flishishangdejintian.jpg)
-**收藏页：**
+#### **收藏页：**
 ![shoucangye.jpg](readme_images%2Fshoucangye.jpg)
-**星辰大海页：**
+#### **星辰大海页：**
 ![xcdhye.jpg](readme_images%2Fxcdhye.jpg)
 
 **欢迎大家提交pull，软件有任何问题欢迎提交issue。**
