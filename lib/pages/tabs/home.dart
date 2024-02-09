@@ -23,6 +23,7 @@ var yiyan_json_from_who = ' '; //一言的发布者
 var yiyan_json_from = ' '; //一言的来源
 var app_id; //api接口的app_id
 var app_secret; //api接口的app_secret
+var Token; // api的token
 var _sc_length = 0;
 late Future _run_chushihua; // 总工具数初始化函数中转
 late Future _run_chushihua1; //收藏数初始化函数中转
@@ -32,7 +33,9 @@ Future getApiKey() async {
   var apijson = await getLocalJson(name);
   app_id = apijson[0]['app_id'];
   app_secret = apijson[0]['app_secret'];
-  print("api数据的app_id：$app_id和app_secret：$app_secret");
+  var apijson1 = await getLocalJson(name);
+  Token = apijson1[1]['Token'];
+  print("api数据的app_id：$app_id和app_secret：$app_secret和Token:$Token");
 }
 
 Future getLocalJson(String jsonName) async {
@@ -88,6 +91,7 @@ class _shouye_homeState extends State<shouye_home> {
       return c;
     } catch (e) {
       print("还没有收藏的功能");
+      return 0;
     }
   }
 
