@@ -8,6 +8,7 @@ import 'package:puresky_kit/pages/home_shouye/all_gongju.dart';
 import 'package:puresky_kit/pages/home_shouye/lishishangdejintian.dart';
 import 'package:puresky_kit/pages/home_shouye/suijiyinyuetuijian.dart';
 import 'package:puresky_kit/pages/home_shouye/wode_shoucang.dart';
+import 'package:puresky_kit/pages/tools/suijishici.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../main.dart';
@@ -373,15 +374,24 @@ class _shouye_homeState extends State<shouye_home> {
                               Expanded(
                                   //左边的下方
                                   flex: 1,
-                                  child: Container(
-                                    margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
-                                    decoration: BoxDecoration(
-                                        image: DecorationImage(
-                                            image: AssetImage(
-                                                "images/pashan.webp"),
-                                            fit: BoxFit.cover),
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(15))),
+                                  child: InkWell(
+                                    child: Container(
+                                      margin: EdgeInsets.fromLTRB(0, 7, 0, 0),
+                                      decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                              image: AssetImage(
+                                                  "images/pashan.webp"),
+                                              fit: BoxFit.cover),
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15))),
+                                    ),
+                                    onTap: (){
+                                      debugPrint('点击了随机诗词');
+                                      Navigator.of(mainContext).push(
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  suijishici()));
+                                    },
                                   ))
                             ],
                           ),
