@@ -36,7 +36,7 @@ class _wode_shoucangState extends State<wode_shoucang> {
         return suijiyinyuetuijian();
       case '历史上的今天':
         return lishishangdejintian();
-      case '我的blog':
+      case '轻雅阁':
         return xingchendahai();
       case '抖音工具':
         return douyinggongju();
