@@ -28,7 +28,7 @@ class _aaaState extends State<vip_yingshi> {
         title: Container(
           child: Center(
             child: Text(
-              "VIP视频解析",
+              "视频解析",
               maxLines: 3,
               textAlign: TextAlign.center,
               style: TextStyle(

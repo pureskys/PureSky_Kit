@@ -132,7 +132,7 @@ class _bilibiligongjuState extends State<bilibiligongju> {
         title: Container(
           child: Center(
             child: Text(
-              "哔哩哔哩工具",
+              "某站工具",
               maxLines: 3,
               textAlign: TextAlign.center,
               style: TextStyle(

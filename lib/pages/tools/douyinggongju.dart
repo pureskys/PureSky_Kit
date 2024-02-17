@@ -79,7 +79,7 @@ class _douyinggongjuState extends State<douyinggongju> {
         title: Container(
           child: Center(
             child: Text(
-              "抖音工具",
+              "某音工具",
               maxLines: 3,
               textAlign: TextAlign.center,
               style: TextStyle(

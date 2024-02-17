@@ -3,17 +3,17 @@
     "Tag": "全部工具",
     "Feature": [
       {
-        "name": "哔哩哔哩工具",
+        "name": "某站工具",
         "isCollect": false,
         "method": "哔哩哔哩工具"
       },
       {
-        "name": "抖音工具",
+        "name": "某音工具",
         "isCollect": false,
         "method": "抖音工具"
       },
       {
-        "name": "VIP视频解析",
+        "name": "视频解析",
         "isCollect": false,
         "method": "VIP视频解析"
       },
@@ -68,17 +68,17 @@
     "Tag": "视频工具",
     "Feature": [
       {
-        "name": "哔哩哔哩工具",
+        "name": "某站工具",
         "isCollect": false,
         "method": "哔哩哔哩工具"
       },
       {
-        "name": "抖音工具",
+        "name": "某音工具",
         "isCollect": false,
         "method": "抖音工具"
       },
       {
-        "name": "VIP视频解析",
+        "name": "视频解析",
         "isCollect": false,
         "method": "VIP视频解析"
       }
