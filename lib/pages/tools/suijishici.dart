@@ -1,5 +1,6 @@
 import 'package:blur/blur.dart';
 import 'package:dio/dio.dart';
+import 'package:dio/io.dart';
 import 'package:flutter/material.dart';
 import 'package:pinyin/pinyin.dart';
 
@@ -55,6 +56,12 @@ class _suijishiciState extends State<suijishici> {
     print(url1);
     try {
       Dio dio = Dio();
+      // 创建一个自定义的HttpClientAdapter
+      dio.httpClientAdapter = IOHttpClientAdapter()
+        ..onHttpClientCreate = (client) {
+          client.badCertificateCallback = (cert, host, port) => true;
+          return null;
+        };
       Response response = await dio.get(url1);
       _net_json = response.data;
       print(_net_json);
@@ -64,11 +71,11 @@ class _suijishiciState extends State<suijishici> {
       origin = _json_decode0['name'];
       category = _json_decode0['theme'];
       print(_json_decode0);
+      return true;
     } catch (error) {
       print('Error: $error');
+      return true;
     }
-    ;
-    return true;
   }
 
   //  文本绘制代码_作者
