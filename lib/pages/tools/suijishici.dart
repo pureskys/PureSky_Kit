@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:blur/blur.dart';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
@@ -57,11 +58,16 @@ class _suijishiciState extends State<suijishici> {
     try {
       Dio dio = Dio();
       // 创建一个自定义的HttpClientAdapter
-      dio.httpClientAdapter = IOHttpClientAdapter()
-        ..onHttpClientCreate = (client) {
-          client.badCertificateCallback = (cert, host, port) => true;
-          return null;
-        };
+      dio.httpClientAdapter = IOHttpClientAdapter(
+          createHttpClient : () {
+            final client = HttpClient(
+              context: SecurityContext(withTrustedRoots: false),
+            );
+            client.badCertificateCallback = (cert, host, port) => true;
+            return client;
+          }
+      );
+
       Response response = await dio.get(url1);
       _net_json = response.data;
       print(_net_json);

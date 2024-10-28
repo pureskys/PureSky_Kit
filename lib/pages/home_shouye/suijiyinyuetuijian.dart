@@ -757,7 +757,7 @@ class _suijiyinyuetuijianState extends State<suijiyinyuetuijian> {
             },
           ),
           canPop: false,
-          onPopInvoked: (bool didPop) async {
+          onPopInvokedWithResult: (bool didPop, dynamic) async {
             if (didPop) {
               return;
             } else {

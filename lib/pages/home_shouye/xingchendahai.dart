@@ -69,7 +69,7 @@ class _xingchendahaiState extends State<xingchendahai> {
             },
           ),
           canPop: false,
-          onPopInvoked: (bool didPop) async {
+          onPopInvokedWithResult: (bool didPop, dynamic) async {
             print(didPop);
             if (didPop) {
               return;

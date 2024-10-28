@@ -261,7 +261,7 @@ class _neirongkapianState extends State<neirongkapian> {
         builder: (context) {
           return PopScope(
             canPop: true,
-            onPopInvoked: (bool didPop) async {
+            onPopInvokedWithResult: (bool didPop, dynamic) async {
               widget.onpressed("历史上的今天");
             },
             child: Container(
