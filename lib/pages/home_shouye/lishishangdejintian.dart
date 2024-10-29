@@ -25,6 +25,7 @@ class _lishishangdejintianState extends State<lishishangdejintian> {
   var app_secret; //api接口的app_secret
   var json_day; //缓存中的日期
   List<Widget> history_widget = [];
+
 //获取api的密匙
   Future getApiKey() async {
     var name = 'apikey';
@@ -33,6 +34,7 @@ class _lishishangdejintianState extends State<lishishangdejintian> {
     app_secret = apijson[0]['app_secret'];
     print("api数据的app_id：$app_id和app_secret：$app_secret");
   }
+
   //history_today的判断是否请求网络
   Future _iscunzai_history_today() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
@@ -182,9 +184,9 @@ class _lishishangdejintianState extends State<lishishangdejintian> {
                       );
                     } else if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
-                    } else if(snapshot.hasData){
-                      for (var i
-                      in jsonDecode(history_today_json.toString())['data']) {
+                    } else if (snapshot.hasData) {
+                      for (var i in jsonDecode(
+                          history_today_json.toString())['data']) {
                         var year = i['year'];
                         var month = i['month'];
                         var day = i['day'];
@@ -193,7 +195,7 @@ class _lishishangdejintianState extends State<lishishangdejintian> {
                         var details = "       " +
                             details1.trim().replaceAll('　', ''); //展示在标签页的文本
                         var details3 =
-                        details1.replaceAll('　', '0-='); //详情页面用来解析后展示的文本
+                            details1.replaceAll('　', '0-='); //详情页面用来解析后展示的文本
                         var details4 = details3.replaceAll('\n', '');
                         var details2 =
                             "       " + details4.replaceAll("0-=", "\n       ");
@@ -210,9 +212,7 @@ class _lishishangdejintianState extends State<lishishangdejintian> {
                       return ListView(
                         children: history_widget,
                       );
-
-                    }
-                    else {
+                    } else {
                       return Container();
                     }
                   },
@@ -260,9 +260,14 @@ class _neirongkapianState extends State<neirongkapian> {
         context: context,
         builder: (context) {
           return PopScope(
-            canPop: true,
+            canPop: false,
             onPopInvokedWithResult: (bool didPop, dynamic) async {
-              widget.onpressed("历史上的今天");
+              if (didPop) {
+                return;
+              } else {
+                widget.onpressed("历史上的今天");
+                Navigator.pop(context);
+              }
             },
             child: Container(
               height: MediaQuery.of(context).size.height,
